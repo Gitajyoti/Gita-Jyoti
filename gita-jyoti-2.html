@@ -1,0 +1,2865 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Gita Jyoti — গীতা পাঠ, জীবনের পথপ্রদর্শক</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Tiro+Bangla&family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<style>
+:root{
+  --bg-0:#0c0703;
+  --bg-1:#1a0f05;
+  --bg-2:#241406;
+  --card:#1e1209cc;
+  --card-solid:#221407;
+  --border:#5a3a14;
+  --gold:#e8a83c;
+  --gold-soft:#f3c265;
+  --gold-deep:#b9791f;
+  --cream:#f3e6c8;
+  --muted:#c9a874;
+  --ember:#ff7a1a;
+  --shadow:0 10px 30px rgba(0,0,0,.55);
+  --radius:18px;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:
+    radial-gradient(circle at 50% -10%, #3a2208 0%, transparent 55%),
+    radial-gradient(circle at 90% 10%, #2a1606 0%, transparent 40%),
+    linear-gradient(180deg, var(--bg-0), var(--bg-1) 30%, var(--bg-0) 100%);
+  color:var(--cream);
+  font-family:'Hind Siliguri','Tiro Bangla',sans-serif;
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+.display{font-family:'Tiro Bangla',serif;}
+.eng-display{font-family:'Cinzel Decorative',serif;}
+
+/* ===== Phone shell ===== */
+.app-wrap{
+  max-width:430px;
+  margin:0 auto;
+  min-height:100vh;
+  position:relative;
+  padding-bottom:84px;
+  background:
+    radial-gradient(ellipse at top, #2e1a07 0%, transparent 60%);
+  border-left:1px solid #2a1809;
+  border-right:1px solid #2a1809;
+}
+
+/* status-bar-like top spacing not needed in real browser, but keep header padding */
+
+/* ===== Header ===== */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 18px 6px;
+}
+.icon-btn{
+  width:38px;height:38px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(160deg,#2a1709,#160c03);
+  border:1px solid var(--border);
+  color:var(--gold-soft);
+  cursor:pointer;
+  transition:transform .15s ease, box-shadow .15s ease;
+  position:relative;
+}
+.icon-btn .notif-dot{
+  position:absolute;top:5px;right:6px;width:9px;height:9px;border-radius:50%;
+  background:#ff4d3a;border:2px solid var(--bg-1);display:none;
+}
+.icon-btn.has-unread .notif-dot{display:block;}
+.notif-card{
+  background:var(--card);border:1px solid var(--border);border-radius:14px;
+  padding:13px 14px;margin-bottom:10px;display:flex;gap:10px;align-items:flex-start;
+}
+.notif-card.unread{border-color:var(--gold-deep);background:#241407;}
+.notif-icon{
+  width:34px;height:34px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:16px;
+  background:radial-gradient(circle,#3a2008,#1c0f04);border:1px solid var(--gold-deep);
+}
+.notif-body h5{margin:0 0 3px;font-size:13.5px;color:var(--gold-soft);}
+.notif-body p{margin:0 0 5px;font-size:12px;color:var(--muted);line-height:1.55;}
+.notif-time{font-size:10.5px;color:#8a6f44;}
+.icon-btn:hover{box-shadow:0 0 0 3px rgba(232,168,60,.15);}
+.icon-btn:active{transform:scale(.92);}
+.icon-btn svg{width:18px;height:18px;}
+
+.hero{
+  margin:6px 16px 16px;
+  border-radius:24px;
+  overflow:hidden;
+  position:relative;
+  border:1px solid #4a2c0e;
+  box-shadow:var(--shadow);
+  background:
+    radial-gradient(ellipse at 50% 0%, #5a3110 0%, #1a0d03 65%);
+}
+.hero-inner{
+  padding:26px 20px 22px;
+  text-align:center;
+}
+.hero-glyph{
+  font-size:26px;color:var(--gold);
+  letter-spacing:6px;
+  margin-bottom:2px;
+}
+.brand-title{
+  font-size:32px;letter-spacing:2px;
+  background:linear-gradient(180deg,#ffe5a8,#caa248 60%, #8a5e1e);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  margin:2px 0 2px;
+  filter:drop-shadow(0 2px 6px rgba(0,0,0,.5));
+}
+.brand-sub{
+  color:var(--muted);
+  font-size:13px;
+  letter-spacing:.5px;
+}
+.hero-art{
+  margin-top:16px;
+  border-radius:16px;
+  overflow:hidden;
+  border:1px solid #4a2c0e44;
+  aspect-ratio:16/10;
+  background:
+    radial-gradient(circle at 30% 20%, #7a4317 0%, transparent 45%),
+    radial-gradient(circle at 75% 75%, #3a1e07 0%, transparent 55%),
+    linear-gradient(160deg,#2a1707,#170c03);
+  display:flex;align-items:center;justify-content:center;
+  position:relative;
+}
+.hero-art::before{
+  content:"কৃ-অ";
+  font-family:'Cinzel Decorative',serif;
+  font-size:54px;
+  color:#caa24830;
+  letter-spacing:8px;
+}
+.hero-art .ornament{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(circle at 50% 100%, rgba(232,168,60,.18), transparent 60%);
+  pointer-events:none;
+  z-index:2;
+}
+.hero-art img.hero-slide{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  object-fit:cover;
+  opacity:0;
+  transition:opacity .7s ease;
+  z-index:1;
+}
+.hero-art img.hero-slide.active{opacity:1;}
+.hero-dots{
+  position:absolute;left:0;right:0;bottom:8px;
+  display:flex;justify-content:center;gap:5px;z-index:3;
+}
+.hero-dots span{
+  width:5px;height:5px;border-radius:50%;
+  background:rgba(255,229,168,.35);
+  transition:background .3s, transform .3s;
+}
+.hero-dots span.active{background:#e8a83c;transform:scale(1.3);}
+
+/* Verse-of-moment card on hero */
+.verse-strip{
+  margin-top:16px;
+  background:linear-gradient(160deg,#160d04,#0e0702);
+  border:1px solid #4a2c0e;
+  border-radius:14px;
+  padding:14px 16px;
+  text-align:right;
+  direction:ltr;
+}
+.verse-strip q{
+  display:block;
+  font-size:14.5px;line-height:1.85;
+  color:var(--gold-soft);
+  font-style:normal;
+  quotes:none;
+  text-align:center;
+}
+.verse-strip cite{
+  display:block;
+  margin-top:8px;
+  font-style:normal;
+  font-size:11.5px;
+  color:var(--muted);
+  text-align:center;
+}
+
+/* Search bar */
+.search-wrap{margin:14px 16px;position:relative;}
+.search-wrap input{
+  width:100%;
+  padding:14px 46px 14px 44px;
+  background:var(--card-solid);
+  border:1px solid var(--border);
+  border-radius:14px;
+  color:var(--cream);
+  font-size:14.5px;
+  font-family:inherit;
+  outline:none;
+}
+.search-wrap input::placeholder{color:#8a6f44;}
+.search-wrap input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(232,168,60,.14);}
+.search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--gold);}
+.mic-icon{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--muted);cursor:pointer;}
+
+/* Quick grid */
+.grid4{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  margin:6px 16px 18px;
+}
+.grid-item{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:14px 6px 10px;
+  text-align:center;
+  cursor:pointer;
+  transition:transform .15s ease, background .15s ease;
+}
+.grid-item:active{transform:scale(.94);}
+.grid-item:hover{background:#2a1809;}
+.grid-icon{
+  width:38px;height:38px;border-radius:50%;
+  margin:0 auto 8px;
+  display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(circle,#3a2008,#1c0f04);
+  border:1px solid var(--gold-deep);
+  color:var(--gold-soft);
+}
+.grid-icon svg{width:17px;height:17px;}
+.grid-label{font-size:11.5px;color:var(--cream);}
+
+/* section titles */
+.section-title{
+  margin:18px 16px 10px;
+  font-size:15.5px;
+  font-weight:600;
+  color:var(--gold-soft);
+  display:flex;align-items:center;gap:8px;
+}
+.section-title::after{
+  content:"";flex:1;height:1px;
+  background:linear-gradient(90deg,var(--border),transparent);
+}
+
+/* Today's special */
+.special-card{
+  margin:0 16px 18px;
+  background:linear-gradient(135deg,#221206,#150b03);
+  border:1px solid var(--border);
+  border-radius:18px;
+  display:flex;
+  overflow:hidden;
+  box-shadow:var(--shadow);
+}
+.special-text{padding:16px;flex:1;}
+.special-text h4{margin:0 0 4px;font-size:15px;color:var(--gold);}
+.special-text p{margin:0 0 4px;font-size:12.5px;color:var(--muted);line-height:1.5;}
+.special-text .quote{font-size:12px;color:var(--cream);opacity:.8;margin:8px 0;}
+.btn-mini{
+  display:inline-block;
+  margin-top:6px;
+  background:linear-gradient(135deg,var(--gold),var(--gold-deep));
+  color:#1a0f03;
+  font-weight:600;
+  font-size:12px;
+  padding:7px 16px;
+  border-radius:9px;
+  cursor:pointer;
+  border:none;
+}
+.special-art{
+  width:110px;flex-shrink:0;
+  background:radial-gradient(circle at 50% 40%, #6a3a12, #1a0d03 75%);
+  display:flex;align-items:center;justify-content:center;
+  color:#caa24850;font-family:'Cinzel Decorative',serif;font-size:30px;
+}
+
+/* progress */
+.progress-card{
+  margin:0 16px 18px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:16px;
+}
+.progress-row{display:flex;justify-content:space-between;gap:10px;}
+.progress-item{flex:1;text-align:center;}
+.progress-icon{font-size:18px;margin-bottom:4px;}
+.progress-num{font-size:20px;font-weight:700;color:var(--gold-soft);}
+.progress-label{font-size:10.5px;color:var(--muted);margin-top:2px;}
+.progress-bar-bg{
+  margin-top:10px;height:6px;border-radius:3px;
+  background:#3a2208;overflow:hidden;
+}
+.progress-bar-fill{
+  height:100%;border-radius:3px;
+  background:linear-gradient(90deg,var(--gold-deep),var(--gold));
+  width:0%;
+  transition:width .6s ease;
+}
+
+/* Pages */
+.page{display:none;padding-bottom:10px;}
+.page.active{display:block;animation:fadeIn .25s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* Verse list / chapter list */
+.list-card{
+  margin:0 16px 12px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:14px 16px;
+  cursor:pointer;
+  transition:background .15s ease;
+}
+.list-card:hover{background:#2a1809;}
+.list-card .row{display:flex;justify-content:space-between;align-items:center;gap:10px;}
+.list-card h5{margin:0;font-size:14.5px;color:var(--gold-soft);}
+.list-card p{margin:4px 0 0;font-size:12.5px;color:var(--muted);line-height:1.6;}
+.chip{
+  font-size:10.5px;color:#1a0f03;background:var(--gold-soft);
+  padding:2px 9px;border-radius:20px;font-weight:600;flex-shrink:0;
+}
+.heart-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;flex-shrink:0;}
+.heart-btn.active{color:#e8543c;}
+
+/* verse detail modal */
+.modal-bg{
+  position:fixed;inset:0;background:rgba(5,2,0,.78);
+  display:none;align-items:flex-end;justify-content:center;z-index:50;
+  backdrop-filter:blur(3px);
+}
+.modal-bg.show{display:flex;}
+.modal-sheet{
+  width:100%;max-width:430px;
+  background:linear-gradient(180deg,#1d1106,#120a03);
+  border:1px solid var(--border);
+  border-radius:22px 22px 0 0;
+  padding:22px 20px 28px;
+  max-height:84vh;overflow-y:auto;
+  animation:slideUp .25s ease;
+}
+@keyframes slideUp{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.modal-handle{width:42px;height:4px;background:#5a3a14;border-radius:3px;margin:0 auto 16px;}
+.modal-sheet h3{color:var(--gold);font-size:14px;margin:0 0 12px;text-align:center;letter-spacing:.5px;}
+.modal-sanskrit{
+  font-size:17px;line-height:2;color:var(--cream);text-align:center;
+  background:#0e0702;border:1px solid var(--border);border-radius:12px;
+  padding:16px;margin-bottom:14px;
+}
+.modal-bangla{font-size:14px;line-height:1.9;color:var(--muted);margin-bottom:14px;}
+.modal-actions{display:flex;gap:10px;margin-top:16px;}
+.modal-actions button{
+  flex:1;padding:11px;border-radius:11px;border:1px solid var(--border);
+  background:var(--card-solid);color:var(--cream);font-size:13px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.modal-actions button.primary{
+  background:linear-gradient(135deg,var(--gold),var(--gold-deep));
+  color:#1a0f03;font-weight:600;border:none;
+}
+
+/* Bottom nav */
+.bottom-nav{
+  position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+  width:100%;max-width:430px;
+  background:linear-gradient(180deg,#1c1006,#100a03);
+  border-top:1px solid var(--border);
+  display:flex;justify-content:space-around;
+  padding:10px 6px 14px;
+  z-index:30;
+}
+.nav-item{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  color:var(--muted);font-size:10.5px;cursor:pointer;
+  background:none;border:none;font-family:inherit;
+}
+.nav-item.active{color:var(--gold-soft);}
+.nav-item svg{width:20px;height:20px;}
+.nav-plus-wrap{
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+  position:relative;
+}
+.nav-plus-btn{
+  width:50px;height:50px;border-radius:50%;
+  background:linear-gradient(135deg,var(--gold),var(--gold-deep));
+  border:3px solid var(--bg-0);
+  display:flex;align-items:center;justify-content:center;
+  color:#1a0f03;cursor:pointer;
+  margin-top:-32px;
+  box-shadow:0 6px 16px rgba(232,168,60,.45);
+  transition:transform .15s ease;
+}
+.nav-plus-btn:active{transform:scale(.92);}
+.nav-plus-btn svg{width:24px;height:24px;}
+.nav-plus-label{font-size:10.5px;color:var(--muted);margin-top:3px;}
+
+.telegram-fab{
+  position:fixed;right:18px;bottom:96px;
+  width:54px;height:54px;border-radius:50%;
+  background:#229ED9;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 6px 18px rgba(34,158,217,.55);
+  z-index:40;cursor:pointer;
+  transition:transform .15s ease;
+}
+.telegram-fab:active{transform:scale(.92);}
+.telegram-fab svg{width:28px;height:28px;}
+
+/* toast */
+.toast{
+  position:fixed;bottom:96px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:#221308;border:1px solid var(--gold-deep);color:var(--cream);
+  padding:10px 18px;border-radius:30px;font-size:12.5px;
+  opacity:0;pointer-events:none;transition:all .3s ease;z-index:60;
+  max-width:380px;text-align:center;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* misc */
+.muted-note{font-size:12px;color:var(--muted);text-align:center;margin:18px 16px;line-height:1.7;}
+.empty-state{text-align:center;padding:40px 20px;color:var(--muted);font-size:13px;}
+.divider-glyph{text-align:center;color:var(--gold-deep);margin:8px 0;font-size:13px;letter-spacing:4px;}
+
+/* profile page */
+.profile-head{
+  text-align:center;padding:30px 20px 18px;
+}
+.avatar-circle{
+  width:78px;height:78px;border-radius:50%;margin:0 auto 12px;
+  background:radial-gradient(circle,#3a2008,#1a0d03);
+  border:2px solid var(--gold-deep);
+  display:flex;align-items:center;justify-content:center;
+  font-size:28px;color:var(--gold-soft);
+  position:relative;overflow:hidden;cursor:pointer;
+}
+.avatar-circle img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+.avatar-edit-badge{
+  position:absolute;bottom:-2px;right:-2px;
+  width:24px;height:24px;border-radius:50%;
+  background:linear-gradient(135deg,var(--gold),var(--gold-deep));
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;border:2px solid var(--bg-0);
+}
+.profile-edit-btn{
+  margin-top:10px;background:var(--card);border:1px solid var(--border);
+  color:var(--gold-soft);font-size:12px;font-weight:600;
+  padding:6px 16px;border-radius:20px;cursor:pointer;
+}
+.profile-edit-sheet{
+  background:var(--card-solid);border:1px solid var(--border);
+  border-radius:18px 18px 0 0;padding:20px;max-width:430px;margin:0 auto;
+}
+.profile-edit-sheet h3{margin:0 0 14px;color:var(--gold-soft);font-size:16px;}
+.profile-edit-avatar-row{display:flex;justify-content:center;margin-bottom:16px;}
+.profile-edit-save{
+  width:100%;background:linear-gradient(135deg,var(--gold),var(--gold-deep));
+  color:#1a0f03;border:none;border-radius:12px;padding:13px;font-weight:700;
+  font-size:14px;cursor:pointer;margin-top:6px;
+}
+.profile-edit-cancel{
+  width:100%;background:transparent;color:var(--muted);border:1px solid var(--border);
+  border-radius:12px;padding:11px;font-weight:600;font-size:13px;cursor:pointer;margin-top:8px;
+}
+.uid-box{
+  margin:0 16px 18px;background:var(--card);border:1px solid var(--border);
+  border-radius:14px;padding:14px;font-size:11.5px;color:var(--muted);word-break:break-all;
+}
+
+/* ===== Mantra Upload (Profile) ===== */
+.mantra-upload-card{
+  margin:0 16px 20px;background:var(--card);border:1px solid var(--border);
+  border-radius:16px;padding:16px;
+}
+.mantra-upload-card h4{margin:0 0 12px;color:var(--gold-soft);font-size:14px;}
+.mantra-field{margin-bottom:12px;}
+.mantra-field label{display:block;font-size:11.5px;color:var(--muted);margin-bottom:5px;}
+.mantra-field textarea,
+.mantra-field input[type="text"]{
+  width:100%;box-sizing:border-box;background:#1a0f04;border:1px solid var(--border);
+  border-radius:10px;padding:10px 12px;color:#f3e6cf;font-size:13px;font-family:inherit;
+}
+.mantra-field textarea{min-height:70px;resize:vertical;}
+.mantra-img-picker{
+  display:flex;align-items:center;gap:12px;
+}
+.mantra-img-preview{
+  width:56px;height:56px;border-radius:50%;object-fit:cover;
+  border:2px solid var(--gold-deep);background:#1a0f04;flex-shrink:0;
+}
+.mantra-img-btn{
+  background:#2a1809;border:1px solid var(--gold-deep);color:var(--gold-soft);
+  padding:8px 14px;border-radius:10px;font-size:12px;cursor:pointer;
+}
+.mantra-upload-btn{
+  width:100%;padding:11px;border:none;border-radius:12px;
+  background:linear-gradient(135deg,var(--gold),var(--gold-deep));
+  color:#1a0f03;font-weight:700;font-size:13.5px;cursor:pointer;margin-top:4px;
+}
+.google-signin-btn{
+  width:100%;display:flex;align-items:center;justify-content:center;gap:10px;
+  background:#fff;border:1px solid #d8d8d8;border-radius:12px;padding:11px;
+  font-size:13.5px;font-weight:600;color:#3c4043;cursor:pointer;margin-bottom:14px;
+}
+.google-signin-btn:active{background:#f3f3f3;}
+.auth-divider{
+  display:flex;align-items:center;gap:10px;margin:4px 0 16px;
+  color:var(--muted);font-size:11.5px;
+}
+.auth-divider::before,.auth-divider::after{
+  content:"";flex:1;height:1px;background:var(--border);
+}
+.auth-field{margin-bottom:12px;text-align:left;}
+.auth-field label{display:block;font-size:11.5px;color:var(--muted);margin-bottom:5px;}
+.auth-field input{
+  width:100%;box-sizing:border-box;background:#1a0f04;border:1px solid var(--border);
+  border-radius:10px;padding:10px 12px;color:#f3e6cf;font-size:13px;font-family:inherit;
+}
+.auth-error{
+  color:#ff8a8a;font-size:12px;margin:-4px 0 10px;min-height:14px;text-align:left;
+}
+.auth-submit-btn{
+  width:100%;padding:11px;border:none;border-radius:12px;
+  background:linear-gradient(135deg,var(--gold),var(--gold-deep));
+  color:#1a0f03;font-weight:700;font-size:13.5px;cursor:pointer;margin-top:4px;
+}
+.auth-switch{
+  text-align:center;font-size:12px;color:var(--muted);margin-top:14px;
+}
+.auth-switch span{color:var(--gold-soft);font-weight:600;cursor:pointer;}
+.auth-tabs{display:flex;gap:8px;margin-bottom:16px;}
+.auth-tabs button{
+  flex:1;padding:9px;border-radius:10px;border:1px solid var(--gold-deep);
+  background:#1a0f04;color:var(--muted);font-size:12.5px;cursor:pointer;font-weight:600;
+}
+.auth-tabs button.active{background:linear-gradient(135deg,var(--gold),var(--gold-deep));color:#1a0f03;}
+.user-mantra-card{
+  margin:0 16px 14px;background:var(--card);border:1px solid var(--border);
+  border-radius:16px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;
+  cursor:pointer;
+}
+.user-mantra-card img{
+  width:46px;height:46px;border-radius:50%;object-fit:cover;
+  border:2px solid var(--gold-deep);flex-shrink:0;
+}
+.user-mantra-card .no-img{
+  width:46px;height:46px;border-radius:50%;flex-shrink:0;
+  background:#2a1809;border:2px solid var(--gold-deep);
+  display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--gold-soft);
+}
+.user-mantra-card .umc-text{font-size:13px;color:#f0e3cc;line-height:1.6;margin:0 0 6px;}
+.user-mantra-card .umc-author{font-size:11.5px;color:var(--gold-soft);font-weight:600;}
+.user-mantra-card .umc-del{
+  margin-left:auto;background:none;border:none;color:var(--muted);
+  font-size:16px;cursor:pointer;flex-shrink:0;
+}
+.umc-serial{
+  flex-shrink:0;width:24px;height:24px;border-radius:50%;
+  background:var(--gold-deep);color:#1a0f03;font-size:11px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;margin-top:2px;
+}
+.umc-edit-hint{font-size:10.5px;color:var(--muted);opacity:.7;margin-top:4px;}
+
+/* ===== Mantra Detail Page ===== */
+.mantra-detail-hero{
+  margin:8px 16px 18px;text-align:center;
+}
+.mantra-detail-img{
+  width:140px;height:140px;border-radius:50%;object-fit:cover;
+  border:3px solid var(--gold-deep);box-shadow:var(--shadow);
+  margin:0 auto 14px;display:block;
+}
+.mantra-detail-img.no-img{
+  display:flex;align-items:center;justify-content:center;
+  font-size:48px;color:var(--gold-soft);
+  background:radial-gradient(circle,#3a2008,#1a0d03);
+}
+.mantra-detail-name{font-size:18px;font-weight:700;color:var(--gold-soft);margin-bottom:4px;}
+.mantra-detail-by{font-size:12px;color:var(--muted);margin-bottom:18px;}
+.mantra-detail-text{
+  margin:0 16px 22px;background:var(--card);border:1px solid var(--border);
+  border-radius:16px;padding:18px;font-size:14.5px;line-height:1.95;color:#f3e6cf;text-align:center;
+}
+.mantra-detail-actions{
+  display:flex;gap:10px;margin:0 16px 18px;
+}
+.mantra-action-btn{
+  flex:1;padding:12px;border-radius:14px;border:1px solid var(--border);
+  background:var(--card-solid);color:var(--cream);font-size:13.5px;font-weight:600;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:7px;
+  transition:transform .15s ease, background .15s ease;
+}
+.mantra-action-btn:active{transform:scale(.96);}
+.mantra-action-btn.liked{background:linear-gradient(135deg,#7a1f1f,#4a1010);border-color:#a83a3a;color:#ffd6d6;}
+.mantra-action-btn.followed{background:linear-gradient(135deg,var(--gold),var(--gold-deep));border-color:var(--gold-deep);color:#1a0f03;}
+.mantra-detail-stats{text-align:center;font-size:11.5px;color:var(--muted);margin:0 16px 10px;}
+
+/* ===== Bangla Calendar ===== */
+.today-bd-card{
+  margin:6px 16px 16px;
+  background:radial-gradient(ellipse at 50% 0%, #4a2a0c 0%, #170c03 75%);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:22px 18px;
+  text-align:center;
+  box-shadow:var(--shadow);
+}
+.today-bd-label{font-size:12px;color:var(--muted);letter-spacing:2px;margin-bottom:6px;}
+.today-bd-main{
+  font-size:26px;font-weight:700;
+  background:linear-gradient(180deg,#ffe5a8,#caa248 70%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  line-height:1.4;
+}
+.today-bd-day{font-size:13px;color:var(--muted);margin-top:4px;}
+.today-greg-date{font-size:11.5px;color:var(--muted);opacity:0.75;margin-top:6px;letter-spacing:0.5px;}
+
+.cal-nav{
+  display:flex;align-items:center;justify-content:space-between;
+  margin:0 16px 10px;gap:6px;
+}
+.cal-nav-btn{
+  width:34px;height:34px;border-radius:10px;flex-shrink:0;
+  background:var(--card-solid);border:1px solid var(--border);
+  color:var(--gold-soft);font-size:16px;cursor:pointer;
+}
+.cal-nav-btn:active{transform:scale(.92);}
+.cal-nav-title{flex:1;text-align:center;}
+.cal-month-name{font-size:17px;font-weight:700;color:var(--gold);}
+.cal-year-name{font-size:11.5px;color:var(--muted);margin-top:2px;}
+
+.cal-weekdays{
+  display:grid;grid-template-columns:repeat(7,1fr);
+  margin:0 16px 6px;gap:4px;
+}
+.cal-weekdays span{
+  text-align:center;font-size:11px;color:var(--muted);padding:4px 0;
+}
+.cal-grid{
+  display:grid;grid-template-columns:repeat(7,1fr);
+  gap:5px;margin:0 16px 10px;
+}
+.cal-cell{
+  aspect-ratio:1;display:flex;align-items:center;justify-content:center;
+  border-radius:10px;font-size:13.5px;color:var(--cream);
+  background:var(--card);border:1px solid transparent;cursor:default;
+}
+.cal-cell.empty{background:transparent;}
+.cal-cell.today{
+  background:linear-gradient(135deg,var(--gold),var(--gold-deep));
+  color:#1a0f03;font-weight:700;border-color:var(--gold);
+}
+.cal-month-list{margin:0 16px 18px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:4px 0;}
+.cal-month-list-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:9px 14px;border-bottom:1px solid #2a1809;font-size:12.5px;
+}
+.cal-month-list-row:last-child{border-bottom:none;}
+.cal-month-list-row.today{color:var(--gold-soft);font-weight:600;}
+
+.fest-banner{
+  margin:0 16px 16px;
+  background:linear-gradient(135deg,#3a1f08,#1c0f04);
+  border:1px solid var(--gold-deep);
+  border-radius:16px;
+  padding:14px 16px;
+  display:flex;align-items:center;gap:12px;
+}
+.fest-banner .fest-emoji{font-size:26px;flex-shrink:0;}
+.fest-banner .fest-text h5{margin:0 0 2px;font-size:13.5px;color:var(--gold-soft);}
+.fest-banner .fest-text p{margin:0;font-size:11.5px;color:var(--muted);line-height:1.5;}
+.cal-cell{position:relative;}
+.cal-cell .fest-dot{
+  position:absolute;bottom:3px;left:50%;transform:translateX(-50%);
+  width:5px;height:5px;border-radius:50%;background:var(--ember);
+}
+.cal-cell .fest-dot.wedding-dot{background:#e6779a;}
+.cal-cell .fest-dot.both-dot{
+  background:linear-gradient(90deg,var(--ember) 50%,#e6779a 50%);
+}
+.cal-cell.today .fest-dot{background:#1a0f03;}
+.fest-tag{
+  font-size:9.5px;background:#3a1f08;color:var(--gold-soft);
+  border:1px solid var(--gold-deep);padding:1px 7px;border-radius:20px;
+  flex-shrink:0;white-space:nowrap;
+}
+.fest-tag.wedding-tag{
+  background:#3a1024;color:#ffb3cb;border-color:#e6779a;
+}
+
+::-webkit-scrollbar{width:0;}
+</style>
+</head>
+<body>
+
+<div class="app-wrap" id="appWrap">
+
+  <!-- ===================== HOME PAGE ===================== -->
+  <div class="page active" id="page-home">
+    <div class="topbar">
+      <div class="icon-btn" id="menuBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </div>
+      <div class="icon-btn" id="bellBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+        <span class="notif-dot" id="bellDot"></span>
+      </div>
+    </div>
+
+    <div class="hero">
+      <div class="hero-inner">
+        <div class="hero-glyph">🪷</div>
+        <div class="brand-title eng-display">GITA JYOTI</div>
+        <div class="brand-sub">গীতা পাঠ, জীবনের পথপ্রদর্শক</div>
+        <div class="hero-art"><div class="ornament"></div></div>
+        <div class="verse-strip">
+          <q id="todayVerseSanskrit">লোড হচ্ছে...</q>
+          <cite id="todayVerseRef"></cite>
+        </div>
+      </div>
+    </div>
+
+    <div class="search-wrap">
+      <span class="search-icon">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      </span>
+      <input type="text" id="homeSearchInput" placeholder="অনুসন্ধান করুন (শ্লোক, অধ্যায়, গীতা...)">
+      <span class="mic-icon">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v4M8 23h8"/></svg>
+      </span>
+    </div>
+
+    <div class="grid4">
+      <div class="grid-item" data-go="reading">
+        <div class="grid-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 4h7a2 2 0 0 1 2 2v14a2 2 0 0 0-2-2H2z"/><path d="M22 4h-7a2 2 0 0 0-2 2v14a2 2 0 0 1 2-2h7z"/></svg></div>
+        <div class="grid-label">গীতা পাঠ</div>
+      </div>
+      <div class="grid-item" data-go="search">
+        <div class="grid-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></div>
+        <div class="grid-label">শ্লোক খুঁজুন</div>
+      </div>
+      <div class="grid-item" data-go="calendar">
+        <div class="grid-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
+        <div class="grid-label">বাংলা ক্যালেন্ডার</div>
+      </div>
+    </div>
+
+    <div class="section-title">আজকের বিশেষ</div>
+    <div class="special-card" id="specialCard">
+      <div class="special-text">
+        <h4>শ্রীমদ্ভগবদ্গীতা</h4>
+        <p id="specialMeta">অধ্যায় ২, শ্লোক ৪৭</p>
+        <p class="quote" id="specialQuote">কর্মণ্যেবাধিকারস্তে মা ফলেষু কদাচন...</p>
+        <button class="btn-mini" id="specialReadBtn">পড়ুন</button>
+      </div>
+      <div class="special-art">॥</div>
+    </div>
+
+    <div class="section-title">আমার আজকের অগ্রগতি</div>
+    <div class="progress-card">
+      <div class="progress-row">
+        <div class="progress-item">
+          <div class="progress-icon">📖</div>
+          <div class="progress-num" id="statVerses">0</div>
+          <div class="progress-label">পঠিত শ্লোক</div>
+        </div>
+        <div class="progress-item">
+          <div class="progress-icon">🚩</div>
+          <div class="progress-num" id="statChapters">0</div>
+          <div class="progress-label">পঠিত অধ্যায়</div>
+        </div>
+        <div class="progress-item">
+          <div class="progress-icon">🔥</div>
+          <div class="progress-num" id="statStreak">0</div>
+          <div class="progress-label">ধারাবাহিক দিন</div>
+        </div>
+      </div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill"></div></div>
+    </div>
+
+    <p class="muted-note">🪷 গীতা জ্যোতি — আলোকিত হোক জীবন 🪷</p>
+  </div>
+
+  <!-- ===================== CHAPTERS PAGE ===================== -->
+  <div class="page" id="page-chapters">
+    <div class="topbar">
+      <div class="icon-btn" data-back="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg></div>
+      <div style="font-weight:600;color:var(--gold-soft);font-size:15px;">অধ্যায় সমূহ</div>
+      <div style="width:38px;"></div>
+    </div>
+    <div class="section-title">ব্যবহারকারীদের আপলোড করা মন্ত্র</div>
+    <div id="userMantrasList"></div>
+    <div class="section-title">অধ্যায় সমূহ</div>
+    <div id="chaptersList"></div>
+  </div>
+
+  <!-- ===================== CHAPTER VERSES PAGE ===================== -->
+  <div class="page" id="page-reading">
+    <div class="topbar">
+      <div class="icon-btn" data-back="chapters"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg></div>
+      <div style="font-weight:600;color:var(--gold-soft);font-size:15px;" id="readingChapterTitle">গীতা পাঠ</div>
+      <div style="width:38px;"></div>
+    </div>
+    <div id="readingList"></div>
+  </div>
+
+  <!-- ===================== SEARCH PAGE ===================== -->
+  <div class="page" id="page-search">
+    <div class="topbar">
+      <div class="icon-btn" data-back="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg></div>
+      <div style="font-weight:600;color:var(--gold-soft);font-size:15px;">শ্লোক খুঁজুন</div>
+      <div style="width:38px;"></div>
+    </div>
+    <div class="search-wrap">
+      <span class="search-icon"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></span>
+      <input type="text" id="searchPageInput" placeholder="শ্লোক, অধ্যায় বা বিষয় লিখুন...">
+    </div>
+    <div id="searchResults"></div>
+  </div>
+
+  <!-- ===================== FAVORITES PAGE ===================== -->
+  <div class="page" id="page-favorites">
+    <div class="topbar">
+      <div class="icon-btn" data-back="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg></div>
+      <div style="font-weight:600;color:var(--gold-soft);font-size:15px;">প্রিয় শ্লোক</div>
+      <div style="width:38px;"></div>
+    </div>
+    <div id="favoritesList"></div>
+  </div>
+
+  <!-- ===================== CALENDAR PAGE ===================== -->
+  <div class="page" id="page-calendar">
+    <div class="topbar">
+      <div class="icon-btn" data-back="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg></div>
+      <div style="font-weight:600;color:var(--gold-soft);font-size:15px;">বাংলা ক্যালেন্ডার</div>
+      <div class="icon-btn" id="calTodayBtn" title="আজ">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>
+      </div>
+    </div>
+
+    <div class="today-bd-card" id="todayBdCard">
+      <div class="today-bd-label">আজ</div>
+      <div class="today-bd-main" id="todayBdMain">--</div>
+      <div class="today-bd-day" id="todayBdDay">--</div>
+      <div class="today-greg-date" id="todayGregDate">--</div>
+    </div>
+
+    <div class="cal-nav">
+      <button class="cal-nav-btn" id="calPrevYear">«</button>
+      <button class="cal-nav-btn" id="calPrevMonth">‹</button>
+      <div class="cal-nav-title">
+        <div class="cal-month-name" id="calMonthName">বৈশাখ</div>
+        <div class="cal-year-name" id="calYearName">১৪৩২ বঙ্গাব্দ</div>
+      </div>
+      <button class="cal-nav-btn" id="calNextMonth">›</button>
+      <button class="cal-nav-btn" id="calNextYear">»</button>
+    </div>
+
+    <div class="cal-weekdays" id="calWeekdays"></div>
+    <div class="cal-grid" id="calGrid"></div>
+  </div>
+
+
+  <!-- ===================== QUIZ PAGE ===================== -->
+  <div class="page" id="page-quiz">
+    <div class="topbar">
+      <div class="icon-btn" data-back="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg></div>
+      <div style="font-weight:600;color:var(--gold-soft);font-size:15px;">গীতা কুইজ</div>
+      <div style="width:38px;"></div>
+    </div>
+    <div id="quizArea"></div>
+  </div>
+
+  <!-- ===================== MORE PAGE ===================== -->
+  <!-- ===================== NOTIFICATIONS PAGE ===================== -->
+  <div class="page" id="page-notifications">
+    <div class="topbar">
+      <div class="icon-btn" data-back="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg></div>
+      <div style="font-weight:600;color:var(--gold-soft);font-size:15px;">নোটিফিকেশন</div>
+      <div style="width:38px;"></div>
+    </div>
+    <div id="notifList" style="margin:6px 16px 18px;"></div>
+  </div>
+
+  <!-- ===================== MORE PAGE ===================== -->
+  <div class="page" id="page-more">
+    <div class="topbar">
+      <div class="icon-btn" data-back="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg></div>
+      <div style="font-weight:600;color:var(--gold-soft);font-size:15px;">আরও সুবিধা</div>
+      <div style="width:38px;"></div>
+    </div>
+    <div class="list-card" id="shareAppCard" style="cursor:pointer;">
+      <h5>📤 বন্ধুকে শেয়ার করুন</h5>
+      <p>Gita Jyoti অ্যাপটি বন্ধুদের সাথে শেয়ার করুন</p>
+    </div>
+  </div>
+
+  <!-- ===================== PROFILE PAGE ===================== -->
+  <div class="page" id="page-profile">
+    <div class="profile-head">
+      <div class="avatar-circle" id="profileAvatarBtn">
+        <span id="profileAvatarPlaceholder">👤</span>
+        <img id="profileAvatarImg" src="" style="display:none;">
+        <div class="avatar-edit-badge">✎</div>
+      </div>
+      <div style="color:var(--gold-soft);font-weight:600;" id="profileName">অতিথি ব্যবহারকারী</div>
+      <div style="color:var(--muted);font-size:12px;margin-top:2px;">গীতা জ্যোতি সদস্য</div>
+      <button type="button" class="profile-edit-btn" id="profileEditOpenBtn">✎ প্রোফাইল এডিট করুন</button>
+    </div>
+    <div class="uid-box">
+      <strong style="color:var(--gold-soft);">আপনার আইডি:</strong><br>
+      <span id="profileUid">কানেক্ট হচ্ছে...</span>
+    </div>
+    <div class="progress-card" style="margin:0 16px 18px;">
+      <div class="progress-row">
+        <div class="progress-item"><div class="progress-num" id="profileVerses">0</div><div class="progress-label">পঠিত শ্লোক</div></div>
+        <div class="progress-item"><div class="progress-num" id="profileFav">0</div><div class="progress-label">প্রিয় শ্লোক</div></div>
+        <div class="progress-item"><div class="progress-num" id="profileStreak">0</div><div class="progress-label">ধারাবাহিক দিন</div></div>
+      </div>
+    </div>
+    <div class="progress-card" style="margin:0 16px 18px;">
+      <div class="progress-row">
+        <div class="progress-item"><div class="progress-num" id="profilePosts">0</div><div class="progress-label">মোট পোস্ট</div></div>
+        <div class="progress-item"><div class="progress-num" id="profileLikes">0</div><div class="progress-label">মোট লাইক</div></div>
+        <div class="progress-item"><div class="progress-num" id="profileFollows">0</div><div class="progress-label">মোট ফলো</div></div>
+      </div>
+    </div>
+
+    <div class="section-title" style="margin:0 16px 10px;">🖼️ হোম ব্যানার ছবি পরিচালনা</div>
+    <div class="list-card" style="margin:0 16px 12px;">
+      <p style="margin:0 0 8px;font-size:12px;color:var(--muted);line-height:1.6;">এখানে ছবির লিংক (URL) যোগ করলে সেগুলো হোম পেজের উপরের বক্সে প্রতি ৩ সেকেন্ড পরপর পরিবর্তিত হয়ে দেখাবে।</p>
+      <input type="text" id="heroBannerUrlInput" placeholder="ছবির লিংক (https://...) পেস্ট করুন" style="width:100%;padding:11px 12px;border-radius:10px;border:1px solid #4a2c0e;background:#160d04;color:var(--gold-soft);font-size:13px;margin-bottom:8px;box-sizing:border-box;">
+      <button type="button" id="heroBannerAddBtn" style="width:100%;padding:11px;border-radius:10px;border:none;background:linear-gradient(180deg,#e8c97a,#caa248);color:#1a0d03;font-weight:600;font-size:13.5px;cursor:pointer;">+ ব্যানার যোগ করুন</button>
+    </div>
+    <div id="heroBannerList" style="margin:0 16px 18px;"></div>
+
+    <div class="section-title" style="margin:0 16px 10px;">আপনার পোস্ট সমূহ (<span id="myPostsCount">0</span>টি)</div>
+    <div id="myPostsList" style="margin:0 16px 18px;"></div>
+
+
+    <p class="muted-note">আপনার অগ্রগতি স্বয়ংক্রিয়ভাবে ক্লাউডে সংরক্ষিত হয়।</p>
+  </div>
+
+  <!-- ===================== MANTRA UPLOAD PAGE (+ বাটন) ===================== -->
+  <div class="page" id="page-mantra-upload">
+    <div class="topbar">
+      <div class="icon-btn" data-back="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg></div>
+      <div style="font-weight:600;color:var(--gold-soft);font-size:15px;">মন্ত্র আপলোড করুন</div>
+      <div style="width:38px;"></div>
+    </div>
+    <div class="mantra-upload-card">
+      <h4>🪔 দেবতা/মন্ত্র আপলোড করুন</h4>
+      <div class="mantra-field">
+        <label>দেবতার নাম / মন্ত্রের নাম</label>
+        <input type="text" id="mantraAuthorInput" placeholder="যেমন: দুর্গা মা, শ্রীকৃষ্ণ, শিব...">
+      </div>
+      <div class="mantra-field">
+        <label>মন্ত্র / শ্লোকের লেখা</label>
+        <textarea id="mantraTextInput" placeholder="এখানে মন্ত্রটি লিখুন..."></textarea>
+      </div>
+      <div class="mantra-field">
+        <label>দেবতার ছবি আপলোড করুন</label>
+        <div class="mantra-img-picker">
+          <img id="mantraImgPreview" class="mantra-img-preview" src="" style="display:none;">
+          <div id="mantraImgPlaceholder" class="user-mantra-card no-img" style="margin:0;">👤</div>
+          <input type="file" id="mantraImgInput" accept="image/*" style="display:none;">
+          <button type="button" class="mantra-img-btn" id="mantraImgBtn">ছবি বাছাই করুন</button>
+        </div>
+      </div>
+      <button class="mantra-upload-btn" id="mantraUploadBtn">আপলোড করুন</button>
+    </div>
+    <p class="muted-note">একই মন্ত্র দুইবার আপলোড করা যাবে না — সিস্টেম স্বয়ংক্রিয়ভাবে যাচাই করে।</p>
+  </div>
+
+  <!-- ===================== MANTRA DETAIL PAGE ===================== -->
+  <div class="page" id="page-mantra-detail">
+    <div class="topbar">
+      <div class="icon-btn" data-back="chapters"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg></div>
+      <div style="font-weight:600;color:var(--gold-soft);font-size:15px;">মন্ত্র</div>
+      <div style="width:38px;"></div>
+    </div>
+    <div class="mantra-detail-hero">
+      <img id="mdImg" class="mantra-detail-img" src="" style="display:none;">
+      <div id="mdImgPlaceholder" class="mantra-detail-img no-img">🕉️</div>
+      <div class="mantra-detail-name" id="mdName">—</div>
+      <div class="mantra-detail-by" id="mdBy">—</div>
+    </div>
+    <div class="mantra-detail-text" id="mdText">—</div>
+    <div class="mantra-detail-stats" id="mdStats">0 লাইক</div>
+    <div class="mantra-detail-actions">
+      <button class="mantra-action-btn" id="mdLikeBtn">♡ লাইক</button>
+      <button class="mantra-action-btn" id="mdFollowBtn">+ ফলো</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- Verse Detail Modal -->
+<div class="modal-bg" id="verseModal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <h3 id="modalRef">অধ্যায় ০, শ্লোক ০</h3>
+    <div class="modal-sanskrit" id="modalSanskrit"></div>
+    <div class="modal-bangla" id="modalBangla"></div>
+    <div class="modal-actions">
+      <button id="modalFavBtn">♡ প্রিয়তে যোগ করুন</button>
+      <button class="primary" id="modalDoneBtn">✓ পঠিত হিসেবে চিহ্নিত</button>
+    </div>
+  </div>
+</div>
+
+<!-- পোস্ট এডিট/ডিলিট অ্যাকশন শিট — পোস্টে ট্যাপ করে ধরলে আসবে -->
+<div class="modal-bg" id="postActionModal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <h3>পোস্ট ম্যানেজ করুন</h3>
+    <div class="modal-actions">
+      <button class="primary" id="postActionEditBtn">✎ এডিট করুন</button>
+      <button id="postActionDeleteBtn" style="color:#ff7a6a;border-color:#5a2d2d;">🗑 ডিলিট করুন</button>
+    </div>
+    <div class="modal-actions">
+      <button id="postActionCancelBtn">বাতিল</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Profile Modal -->
+<div class="modal-bg" id="profileEditModal">
+  <div class="profile-edit-sheet">
+    <h3>✎ প্রোফাইল এডিট করুন</h3>
+    <div class="profile-edit-avatar-row">
+      <div class="avatar-circle" id="profileEditAvatarBtn" style="width:88px;height:88px;font-size:32px;">
+        <span id="profileEditAvatarPlaceholder">👤</span>
+        <img id="profileEditAvatarImg" src="" style="display:none;">
+        <div class="avatar-edit-badge">✎</div>
+      </div>
+      <input type="file" id="profileEditAvatarInput" accept="image/*" style="display:none;">
+    </div>
+    <div class="auth-field">
+      <label>আপনার নাম</label>
+      <input type="text" id="profileEditNameInput" placeholder="যেমন: রাম মণ্ডল">
+    </div>
+    <div class="auth-error" id="profileEditErrorMsg"></div>
+    <button type="button" class="profile-edit-save" id="profileEditSaveBtn">✓ সংরক্ষণ করুন</button>
+    <button type="button" class="profile-edit-cancel" id="profileEditCancelBtn">বাতিল করুন</button>
+  </div>
+</div>
+
+<!-- Auth (Login / Sign Up) Modal -->
+<div class="modal-bg" id="authModal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <h3 id="authModalTitle">🪔 ধর্মীয় লেখা পোস্ট করতে লগইন করুন</h3>
+
+    <div class="auth-tabs">
+      <button type="button" id="authTabSignup" class="active">নতুন অ্যাকাউন্ট খুলুন</button>
+      <button type="button" id="authTabLogin">লগইন করুন</button>
+    </div>
+
+    <button type="button" id="googleSignInBtn" class="google-signin-btn">
+      <svg width="18" height="18" viewBox="0 0 48 48">
+        <path fill="#FFC107" d="M43.6 20.5h-1.9V20.5H24v7h11.3c-1.6 4.6-6 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 3l5.3-5.3C34.6 6.1 29.6 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.2-.1-2.4-.4-3.5z"/>
+        <path fill="#FF3D00" d="M6.3 14.7l5.8 4.2C13.6 15.1 18.4 12 24 12c3.1 0 5.8 1.1 8 3l5.3-5.3C34.6 6.1 29.6 4 24 4c-7.4 0-13.7 4.1-17 10.2z"/>
+        <path fill="#4CAF50" d="M24 44c5.5 0 10.4-2.1 14.1-5.6l-6.5-5.5C29.6 34.4 26.9 35.5 24 35.5c-5.3 0-9.7-3.4-11.3-8l-6.6 5.1C9.2 39.7 16 44 24 44z"/>
+        <path fill="#1976D2" d="M43.6 20.5h-1.9V20.5H24v7h11.3c-.8 2.3-2.2 4.2-4.1 5.6l6.5 5.5C40.7 36.5 44 30.9 44 24c0-1.2-.1-2.4-.4-3.5z"/>
+      </svg>
+      গুগল দিয়ে লগইন করুন
+    </button>
+
+    <div class="auth-divider"><span>অথবা জিমেইল ও পাসওয়ার্ড দিয়ে</span></div>
+
+    <form id="authForm" autocomplete="off">
+      <div class="auth-field" id="authNameField">
+        <label>আপনার নাম</label>
+        <input type="text" id="authNameInput" placeholder="যেমন: রাম মণ্ডল">
+      </div>
+      <div class="auth-field">
+        <label>জিমেইল আইডি</label>
+        <input type="email" id="authEmailInput" placeholder="example@gmail.com">
+      </div>
+      <div class="auth-field">
+        <label>পাসওয়ার্ড</label>
+        <input type="password" id="authPasswordInput" placeholder="কমপক্ষে ৬ অক্ষর">
+      </div>
+      <div class="auth-field" id="authConfirmField">
+        <label>পাসওয়ার্ড নিশ্চিত করুন</label>
+        <input type="password" id="authConfirmPasswordInput" placeholder="পাসওয়ার্ড আবার লিখুন">
+      </div>
+      <div class="auth-error" id="authErrorMsg"></div>
+      <button type="submit" class="auth-submit-btn" id="authSubmitBtn">অ্যাকাউন্ট তৈরি করুন ও পোস্ট করুন</button>
+    </form>
+
+    <div class="auth-switch" id="authSwitchText">
+      ইতিমধ্যে অ্যাকাউন্ট আছে? <span id="authSwitchLink">লগইন করুন</span>
+    </div>
+
+    <div class="modal-actions">
+      <button id="authCloseBtn">বাতিল করুন</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Bottom Nav -->
+<a class="telegram-fab" href="https://t.me/gitajyoti1" target="_blank" rel="noopener" aria-label="Telegram গ্রুপে যোগ দিন">
+  <svg viewBox="0 0 240 240" fill="none"><path d="M198 60 173 188c-2 9-7 11-15 7l-41-30-20 19c-2 2-4 4-8 4l3-41 75-68c3-3-1-5-5-2l-93 59-40-13c-9-3-9-9 2-13l156-60c7-3 14 2 11 13z" fill="#fff"/></svg>
+</a>
+
+<div class="bottom-nav">
+  <button class="nav-item active" data-go="home">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+    হোম
+  </button>
+  <button class="nav-item" data-go="chapters">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 4h7a2 2 0 0 1 2 2v14a2 2 0 0 0-2-2H2z"/><path d="M22 4h-7a2 2 0 0 0-2 2v14a2 2 0 0 1 2-2h7z"/></svg>
+    গীতা পাঠ
+  </button>
+  <div class="nav-plus-wrap">
+    <button class="nav-plus-btn" id="navPlusBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+    </button>
+    <span class="nav-plus-label">আপলোড</span>
+  </div>
+  <button class="nav-item" data-go="profile">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 5-6 8-6s6.5 2 8 6"/></svg>
+    প্রোফাইল
+  </button>
+</div>
+
+<script>
+/* =========================================================
+   ১) FIREBASE কনফিগ — এখানে আপনার নিজের Firebase কনফিগ বসান
+   Firebase Console > Project Settings > General > Your apps > SDK setup
+   ========================================================= */
+const firebaseConfig = {
+  apiKey: "AIzaSyD5AVB0VdG624czNYxwDS3VxBMa6NGyqZY",
+  authDomain: "gita-jyoti-e3a1b.firebaseapp.com",
+  projectId: "gita-jyoti-e3a1b",
+  storageBucket: "gita-jyoti-e3a1b.firebasestorage.app",
+  messagingSenderId: "331914497517",
+  appId: "1:331914497517:web:14402451fd53799c942be4",
+  measurementId: "G-E2LPEQVPK7"
+};
+
+let db = null;
+let auth = null;
+let currentUser = null;
+let firebaseReady = false;
+
+try{
+  firebase.initializeApp(firebaseConfig);
+  auth = firebase.auth();
+  db = firebase.firestore();
+  firebaseReady = true;
+}catch(e){
+  console.warn("Firebase init failed — অফলাইন মোডে চলবে।", e);
+}
+
+/* =========================================================
+   ২) গীতার শ্লোক ডাটাবেস (নমুনা সংগ্রহ — চাইলে আরও শ্লোক যোগ করুন)
+   প্রতিটি অধ্যায়ে চাহিদা মতো verses array তে আরও বস্তু যোগ করা যাবে।
+   ========================================================= */
+const GITA_DATA = {
+  chapters: [
+    {id:1, name:"অর্জুনবিষাদযোগ", totalVerses:47, summary:"যুদ্ধক্ষেত্রে অর্জুনের মোহ ও বিষাদ"},
+    {id:2, name:"সাংখ্যযোগ", totalVerses:72, summary:"আত্মার অবিনাশিত্ব ও কর্মযোগের সূচনা"},
+    {id:3, name:"কর্মযোগ", totalVerses:43, summary:"নিষ্কাম কর্মের মাহাত্ম্য"},
+    {id:4, name:"জ্ঞানকর্মসন্ন্যাসযোগ", totalVerses:42, summary:"জ্ঞান ও কর্মের সমন্বয়"},
+    {id:5, name:"কর্মসন্ন্যাসযোগ", totalVerses:29, summary:"কর্মত্যাগ ও কর্মযোগের তুলনা"},
+    {id:6, name:"আত্মসংযমযোগ", totalVerses:47, summary:"ধ্যানযোগের পথ"},
+    {id:7, name:"জ্ঞানবিজ্ঞানযোগ", totalVerses:30, summary:"পরমেশ্বরের স্বরূপ"},
+    {id:8, name:"অক্ষরব্রহ্মযোগ", totalVerses:28, summary:"অবিনাশী ব্রহ্ম তত্ত্ব"},
+    {id:9, name:"রাজবিদ্যারাজগুহ্যযোগ", totalVerses:34, summary:"পরম গোপনীয় জ্ঞান"},
+    {id:10, name:"বিভূতিযোগ", totalVerses:42, summary:"ভগবানের ঐশ্বরিক বিভূতি"},
+    {id:11, name:"বিশ্বরূপদর্শনযোগ", totalVerses:55, summary:"বিশ্বরূপ দর্শন"},
+    {id:12, name:"ভক্তিযোগ", totalVerses:20, summary:"ভক্তিযোগের শ্রেষ্ঠত্ব"},
+    {id:13, name:"ক্ষেত্রক্ষেত্রজ্ঞবিভাগযোগ", totalVerses:35, summary:"প্রকৃতি ও পুরুষের ভেদ"},
+    {id:14, name:"গুণত্রয়বিভাগযোগ", totalVerses:27, summary:"ত্রিগুণের বিশ্লেষণ"},
+    {id:15, name:"পুরুষোত্তমযোগ", totalVerses:20, summary:"পরম পুরুষের তত্ত্ব"},
+    {id:16, name:"দৈবাসুরসম্পদ্বিভাগযোগ", totalVerses:24, summary:"দৈবী ও আসুরী স্বভাব"},
+    {id:17, name:"শ্রদ্ধাত্রয়বিভাগযোগ", totalVerses:28, summary:"ত্রিবিধ শ্রদ্ধার বিভাগ"},
+    {id:18, name:"মোক্ষসন্ন্যাসযোগ", totalVerses:78, summary:"সমগ্র গীতার উপসংহার"}
+  ],
+  verses: [
+    // এখানে আগে কিছু শ্লোক ছিল, ব্যবহারকারীর অনুরোধে মুছে ফেলা হয়েছে।
+    // এখন ব্যবহারকারীরা প্রোফাইল পেজ থেকে নিজেদের মন্ত্র/শ্লোক আপলোড করতে পারবেন।
+  ]
+};
+
+/* =========================================================
+   ২.৫) পূজা-পার্বণ ও উৎসব তালিকা (গ্রেগরিয়ান তারিখ অনুসারে, পঞ্জিকা/পঞ্চাঙ্গ অনুযায়ী)
+   নোট: হিন্দু পূজার তারিখ চন্দ্র-সৌর হিসাবে প্রতি বছর বদলায়, তাই নির্ভুল রাখতে
+   বছরভিত্তিক প্রকৃত পঞ্জিকার তারিখ এখানে দেওয়া হলো। নতুন বছর এলে এই তালিকায়
+   নতুন এন্ট্রি যোগ করে নিতে হবে।
+   ========================================================= */
+const FESTIVALS = [
+  // ====== ২০২৬ ======
+  {y:2026, m:0, d:14, name:"মকর সংক্রান্তি (পৌষ পার্বণ)", emoji:"🌾", note:"সূর্যের মকর রাশিতে প্রবেশ — পিঠা-পুলির উৎসব ও পুণ্যস্নান"},
+  {y:2026, m:0, d:23, name:"সরস্বতী পূজা (বসন্ত পঞ্চমী)", emoji:"📚", note:"বিদ্যা ও জ্ঞানের দেবী সরস্বতীর আরাধনা — শুভ দিন"},
+  {y:2026, m:1, d:15, name:"মহাশিবরাত্রি", emoji:"🕉️", note:"দেবাদিদেব মহাদেবের আরাধনার পবিত্র রাত্রি — উপবাস ও শিবলিঙ্গে জলাভিষেক"},
+  {y:2026, m:2, d:3,  name:"দোলযাত্রা / হোলিকা দহন", emoji:"🎨", note:"রঙের উৎসব ও হোলিকা দহন — শুভ দিন"},
+  {y:2026, m:2, d:26, name:"রামনবমী", emoji:"🏹", note:"শ্রীরামচন্দ্রের আবির্ভাব তিথি — শুভ দিন"},
+  {y:2026, m:3, d:13, name:"চৈত্র সংক্রান্তি (চড়ক পূজা)", emoji:"🌗", note:"বাংলা বছরের শেষ দিন, চড়ক পূজা পালিত হয়"},
+  {y:2026, m:3, d:14, name:"পহেলা বৈশাখ (বাংলা নববর্ষ)", emoji:"🎉", note:"বাংলা নতুন বছরের শুরু — অত্যন্ত শুভ দিন"},
+  {y:2026, m:3, d:19, name:"অক্ষয় তৃতীয়া", emoji:"🪙", note:"হিন্দু শাস্ত্রে সর্বাধিক শুভ তিথিগুলোর একটি — নতুন কাজ শুরু, ক্রয়-বিক্রয় ও পূজার জন্য পুণ্যদিন"},
+  {y:2026, m:6, d:16, name:"রথযাত্রা", emoji:"🛕", note:"ভগবান জগন্নাথদেবের রথযাত্রা উৎসব"},
+  {y:2026, m:7, d:28, name:"ঝুলন পূর্ণিমা / রাখী বন্ধন", emoji:"🪢", note:"রাধাকৃষ্ণের ঝুলন উৎসব ও রক্ষাবন্ধন"},
+  {y:2026, m:8, d:4,  name:"জন্মাষ্টমী", emoji:"🦚", note:"শ্রীকৃষ্ণের আবির্ভাব তিথি — অত্যন্ত শুভ দিন"},
+  {y:2026, m:8, d:14, name:"গণেশ চতুর্থী", emoji:"🐘", note:"গণপতি বাপ্পার আরাধনা শুরু"},
+  {y:2026, m:8, d:17, name:"বিশ্বকর্মা পূজা", emoji:"⚙️", note:"কারিগরী ও যন্ত্রের দেবতা বিশ্বকর্মার পূজা"},
+  {y:2026, m:9, d:10, name:"মহালয়া", emoji:"🪔", note:"দেবীপক্ষের সূচনা, পিতৃপক্ষের সমাপ্তি — দুর্গাপূজার আমন্ত্রণ শুরু"},
+  {y:2026, m:9, d:17, name:"মহাষষ্ঠী (দুর্গাপূজা শুরু)", emoji:"🙏", note:"দেবী দুর্গার বোধন — দুর্গাপূজা আনুষ্ঠানিকভাবে শুরু হবে"},
+  {y:2026, m:9, d:18, name:"মহাসপ্তমী", emoji:"🌺", note:"দুর্গাপূজার সপ্তমী তিথি, নবপত্রিকা স্নান"},
+  {y:2026, m:9, d:19, name:"মহাষ্টমী ও সন্ধি পূজা", emoji:"🔱", note:"দুর্গাপূজার সবচেয়ে গুরুত্বপূর্ণ দিন, কুমারী পূজা ও সন্ধি পূজা"},
+  {y:2026, m:9, d:20, name:"মহানবমী", emoji:"🪈", note:"দুর্গাপূজার নবমী তিথি, মহাযজ্ঞ ও আরতি"},
+  {y:2026, m:9, d:21, name:"বিজয়া দশমী", emoji:"🛶", note:"দুর্গাপূজার সমাপ্তি, প্রতিমা বিসর্জন — শুভ বিজয়া"},
+  {y:2026, m:9, d:25, name:"লক্ষ্মী পূজা (কোজাগরী)", emoji:"🪷", note:"ধন-সম্পদের দেবী লক্ষ্মীর আরাধনা — শুভ দিন"},
+  {y:2026, m:10, d:8, name:"কালীপূজা / দীপাবলি", emoji:"🪔", note:"দেবী কালীর আরাধনা ও আলোর উৎসব দীপাবলি"},
+  {y:2026, m:10, d:11,name:"ভাইফোঁটা", emoji:"❤️", note:"ভাই-বোনের স্নেহের উৎসব"},
+  // ====== ২০২৭ (বছরের শুরু — আগাম প্রদর্শনের জন্য) ======
+  {y:2027, m:0, d:14, name:"মকর সংক্রান্তি (পৌষ পার্বণ)", emoji:"🌾", note:"সূর্যের মকর রাশিতে প্রবেশ — পিঠা-পুলির উৎসব ও পুণ্যস্নান"},
+];
+
+/* =========================================================
+   ২.৬) বিবাহের শুভ তারিখ (পঞ্জিকা অনুযায়ী আনুমানিক)
+   দ্রষ্টব্য: বিবাহের প্রকৃত শুভ লগ্ন ও মুহূর্ত বর-কনের জন্মতারিখ, সময়
+   ও স্থান অনুযায়ী পরিবর্তিত হয়। এখানে দেওয়া তারিখগুলো পঞ্জিকার সাধারণ
+   নির্দেশনা — চূড়ান্ত সিদ্ধান্তের আগে অভিজ্ঞ পুরোহিত/জ্যোতিষীর পরামর্শ নিন।
+   ========================================================= */
+const WEDDINGS = [
+  // ফাল্গুন-চৈত্র (মার্চ ২০২৬)
+  {y:2026, m:2, d:2,  name:"শুভ বিবাহের দিন", emoji:"💍"},
+  {y:2026, m:2, d:4,  name:"শুভ বিবাহের দিন", emoji:"💍"},
+  {y:2026, m:2, d:7,  name:"শুভ বিবাহের দিন", emoji:"💍"},
+  {y:2026, m:2, d:8,  name:"শুভ বিবাহের দিন", emoji:"💍"},
+  {y:2026, m:2, d:9,  name:"শুভ বিবাহের দিন", emoji:"💍"},
+  {y:2026, m:2, d:11, name:"শুভ বিবাহের দিন", emoji:"💍"},
+  {y:2026, m:2, d:12, name:"শুভ বিবাহের দিন", emoji:"💍"},
+  {y:2026, m:2, d:20, name:"শুভ বিবাহের দিন (চৈত্র মাস — বিশেষ মুহূর্ত)", emoji:"💍"},
+  // বৈশাখ (এপ্রিল ২০২৬)
+  {y:2026, m:3, d:18, name:"শুভ বিবাহের দিন", emoji:"💍"},
+  {y:2026, m:3, d:19, name:"শুভ বিবাহের দিন (অক্ষয় তৃতীয়া)", emoji:"💍"},
+  {y:2026, m:3, d:20, name:"শুভ বিবাহের দিন", emoji:"💍"},
+  {y:2026, m:3, d:24, name:"শুভ বিবাহের দিন", emoji:"💍"},
+  {y:2026, m:3, d:27, name:"শুভ বিবাহের দিন", emoji:"💍"},
+  {y:2026, m:3, d:28, name:"শুভ বিবাহের দিন", emoji:"💍"},
+  {y:2026, m:3, d:29, name:"শুভ বিবাহের দিন", emoji:"💍"},
+  // জ্যৈষ্ঠ (মে ২০২৬)
+  {y:2026, m:4, d:3,  name:"শুভ বিবাহের দিন", emoji:"💍"},
+  {y:2026, m:4, d:4,  name:"শুভ বিবাহের দিন", emoji:"💍"},
+  {y:2026, m:4, d:8,  name:"শুভ বিবাহের দিন", emoji:"💍"},
+  {y:2026, m:4, d:10, name:"শুভ বিবাহের দিন", emoji:"💍"},
+  {y:2026, m:4, d:11, name:"শুভ বিবাহের দিন", emoji:"💍"},
+];
+
+function getFestivalsOnGreg(y,m,d){
+  return FESTIVALS.filter(f=>f.y===y && f.m===m && f.d===d);
+}
+function getFestivalsForYear(gYear){
+  return FESTIVALS.filter(f=>f.y===gYear);
+}
+function getWeddingsOnGreg(y,m,d){
+  return WEDDINGS.filter(f=>f.y===y && f.m===m && f.d===d);
+}
+function getWeddingsForYear(gYear){
+  return WEDDINGS.filter(f=>f.y===gYear);
+}
+function getAllUpcomingFestivals(fromDate){
+  return FESTIVALS
+    .map(f=>({...f, dateObj:new Date(f.y,f.m,f.d)}))
+    .filter(f=>f.dateObj >= new Date(fromDate.getFullYear(),fromDate.getMonth(),fromDate.getDate()))
+    .sort((a,b)=>a.dateObj-b.dateObj);
+}
+
+
+let state = {
+  favorites: {},      // key "ch-v" -> true
+  read: {},            // key "ch-v" -> true
+  readChapters: {},
+  streak: 0,
+  lastReadDate: null
+};
+let activeModalVerse = null;
+
+function verseKey(ch,v){ return ch+"-"+v; }
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2200);
+}
+
+/* =========================================================
+   ৪) FIREBASE AUTH (Anonymous) + DATA SYNC
+   ========================================================= */
+function initAuth(){
+  /* প্রথমেই লোকাল ডেটা দিয়ে পেজ সাথে সাথে দেখানো হয়, যাতে ইন্টারনেট স্লো থাকলেও
+     "লোড হচ্ছে..." লেখাটা দীর্ঘক্ষণ আটকে না থাকে। পরে ক্লাউড থেকে ডেটা এলে আপডেট হবে। */
+  loadLocalState();
+  renderAll();
+  renderProfileIdentity();
+
+  if(!firebaseReady){
+    document.getElementById('profileUid').textContent = "অফলাইন মোড — Firebase কনফিগার করুন";
+    return;
+  }
+  /* লগইন সেশন স্থায়ীভাবে (ব্রাউজার বন্ধ করার পরও) সংরক্ষণের জন্য */
+  try{
+    auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+  }catch(e){ console.warn('Persistence সেট করা যায়নি:', e); }
+
+  let authResolved = false;
+  /* আগে থেকে কোনো লগইন (গুগল/ইমেইল/অতিথি) সংরক্ষিত আছে কিনা সেটা আগে চেক করা হয়।
+     থাকলে সেটাই ব্যবহার হবে — নতুন করে আর কখনো লগইন চাইবে না।
+     না থাকলে তখনই কেবল অতিথি হিসেবে সাইন-ইন করা হবে। */
+  auth.onAuthStateChanged(user=>{
+    authResolved = true;
+    if(user){
+      currentUser = user;
+      document.getElementById('profileUid').textContent = user.uid;
+      if(!user.isAnonymous){
+        document.getElementById('profileName').textContent = user.displayName || user.email || 'ব্যবহারকারী';
+      }
+      renderProfileIdentity();
+      loadUserData();
+    } else {
+      auth.signInAnonymously().catch(err=>{
+        console.warn("Auth error:", err);
+        loadLocalState();
+        renderAll();
+      });
+    }
+  });
+
+  /* কিছু ব্রাউজারে onAuthStateChanged দেরিতে চালু হতে পারে — তাই খুব বেশি দেরি হলে
+     (৪ সেকেন্ড পরও কিছু না হলে) অফলাইন/লোকাল মোডে চলে যাবে, যাতে অ্যাপ আটকে না থাকে। */
+  /* কিছু ব্রাউজারে onAuthStateChanged দেরিতে চালু হতে পারে — তবে পেজ ইতিমধ্যে লোকাল
+     ডেটা দিয়ে দেখানো হয়ে গেছে, তাই এটা শুধু নিশ্চিত করার জন্য (safety net)। */
+  setTimeout(()=>{
+    if(!authResolved && !currentUser){
+      console.warn('Firebase auth সাড়া দিচ্ছে না — অফলাইন মোডেই থাকবে।');
+    }
+  }, 4000);
+}
+
+/* =========================================================
+   প্রোফাইল এডিট — নাম ও ছবি
+   ========================================================= */
+function getProfilePhoto(){
+  try{ return localStorage.getItem('gitaJyotiProfilePhoto') || ''; }catch(e){ return ''; }
+}
+function saveProfilePhoto(dataUrl){
+  try{ localStorage.setItem('gitaJyotiProfilePhoto', dataUrl); }catch(e){}
+}
+function getProfileNameOverride(){
+  try{ return localStorage.getItem('gitaJyotiProfileName') || ''; }catch(e){ return ''; }
+}
+function saveProfileNameOverride(name){
+  try{ localStorage.setItem('gitaJyotiProfileName', name); }catch(e){}
+}
+
+function renderProfileIdentity(){
+  const nameOverride = getProfileNameOverride();
+  const photo = getProfilePhoto();
+  const nameEl = document.getElementById('profileName');
+  if(nameEl){
+    if(nameOverride){
+      nameEl.textContent = nameOverride;
+    } else if(currentUser && !currentUser.isAnonymous){
+      nameEl.textContent = currentUser.displayName || currentUser.email || 'ব্যবহারকারী';
+    } else {
+      nameEl.textContent = 'অতিথি ব্যবহারকারী';
+    }
+  }
+  const avatarImg = document.getElementById('profileAvatarImg');
+  const avatarPlaceholder = document.getElementById('profileAvatarPlaceholder');
+  if(avatarImg && avatarPlaceholder){
+    if(photo){
+      avatarImg.src = photo;
+      avatarImg.style.display = 'block';
+      avatarPlaceholder.style.display = 'none';
+    } else {
+      avatarImg.style.display = 'none';
+      avatarPlaceholder.style.display = 'block';
+    }
+  }
+}
+
+let editAvatarSelected = null;
+
+function openProfileEditModal(){
+  document.getElementById('profileEditErrorMsg').textContent = '';
+  const nameOverride = getProfileNameOverride();
+  const currentName = nameOverride || (currentUser && !currentUser.isAnonymous ? (currentUser.displayName || '') : '');
+  document.getElementById('profileEditNameInput').value = currentName;
+  editAvatarSelected = null;
+  const photo = getProfilePhoto();
+  const img = document.getElementById('profileEditAvatarImg');
+  const placeholder = document.getElementById('profileEditAvatarPlaceholder');
+  if(photo){
+    img.src = photo;
+    img.style.display = 'block';
+    placeholder.style.display = 'none';
+  } else {
+    img.style.display = 'none';
+    placeholder.style.display = 'block';
+  }
+  document.getElementById('profileEditModal').classList.add('show');
+}
+function closeProfileEditModal(){
+  document.getElementById('profileEditModal').classList.remove('show');
+}
+
+function setupProfileEdit(){
+  const openBtn = document.getElementById('profileEditOpenBtn');
+  const avatarBtn = document.getElementById('profileAvatarBtn');
+  const editAvatarBtn = document.getElementById('profileEditAvatarBtn');
+  const editAvatarInput = document.getElementById('profileEditAvatarInput');
+  const saveBtn = document.getElementById('profileEditSaveBtn');
+  const cancelBtn = document.getElementById('profileEditCancelBtn');
+  if(!openBtn) return;
+
+  const requireLoginThenOpen = ()=>{
+    if(!isRealUser()){
+      pendingPostAction = openProfileEditModal;
+      setAuthMode('signup');
+      document.getElementById('authModalTitle').textContent = '🪔 প্রোফাইল এডিট করতে লগইন করুন';
+      openAuthModal();
+      return;
+    }
+    openProfileEditModal();
+  };
+
+  openBtn.addEventListener('click', requireLoginThenOpen);
+  avatarBtn.addEventListener('click', requireLoginThenOpen);
+
+  editAvatarBtn.addEventListener('click', ()=> editAvatarInput.click());
+  editAvatarInput.addEventListener('change', (e)=>{
+    const file = e.target.files[0];
+    if(!file) return;
+    if(file.size > 2*1024*1024){
+      document.getElementById('profileEditErrorMsg').textContent = 'ছবির সাইজ ২ এমবি-র কম হতে হবে';
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (ev)=>{
+      editAvatarSelected = ev.target.result;
+      const img = document.getElementById('profileEditAvatarImg');
+      const placeholder = document.getElementById('profileEditAvatarPlaceholder');
+      img.src = editAvatarSelected;
+      img.style.display = 'block';
+      placeholder.style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+  });
+
+  cancelBtn.addEventListener('click', closeProfileEditModal);
+
+  saveBtn.addEventListener('click', ()=>{
+    const name = document.getElementById('profileEditNameInput').value.trim();
+    const errBox = document.getElementById('profileEditErrorMsg');
+    if(!name){
+      errBox.textContent = 'আপনার নাম লিখুন';
+      return;
+    }
+    errBox.textContent = '';
+    saveProfileNameOverride(name);
+    if(editAvatarSelected){
+      saveProfilePhoto(editAvatarSelected);
+    }
+    if(currentUser && !currentUser.isAnonymous){
+      currentUser.updateProfile({ displayName: name }).catch(()=>{});
+    }
+    renderProfileIdentity();
+    closeProfileEditModal();
+    showToast('প্রোফাইল আপডেট হয়েছে ✓');
+  });
+}
+setupProfileEdit();
+
+function loadUserData(){
+  if(!db || !currentUser) return;
+  db.collection('users').doc(currentUser.uid).get().then(doc=>{
+    if(doc.exists){
+      const d = doc.data();
+      state.favorites = d.favorites || {};
+      state.read = d.read || {};
+      state.readChapters = d.readChapters || {};
+      state.streak = d.streak || 0;
+      state.lastReadDate = d.lastReadDate || null;
+    }
+    checkStreak();
+    renderAll();
+  }).catch(err=>{
+    console.warn("Firestore read error:", err);
+    loadLocalState();
+    renderAll();
+  });
+}
+
+function saveUserData(){
+  saveLocalState();
+  if(!db || !currentUser) return;
+  db.collection('users').doc(currentUser.uid).set(state, {merge:true}).catch(err=>{
+    console.warn("Firestore write error:", err);
+  });
+}
+
+function loadLocalState(){
+  try{
+    const raw = localStorage.getItem('gitaJyotiState');
+    if(raw) state = Object.assign(state, JSON.parse(raw));
+  }catch(e){}
+}
+function saveLocalState(){
+  try{ localStorage.setItem('gitaJyotiState', JSON.stringify(state)); }catch(e){}
+}
+
+function checkStreak(){
+  const today = new Date().toDateString();
+  if(state.lastReadDate === today) return;
+  const yesterday = new Date(Date.now()-86400000).toDateString();
+  if(state.lastReadDate === yesterday){
+    state.streak += 1;
+  } else if(state.lastReadDate !== today){
+    state.streak = state.lastReadDate ? 1 : state.streak;
+  }
+  state.lastReadDate = today;
+  saveUserData();
+}
+
+/* =========================================================
+   ৫) "আজকের শ্লোক" নির্বাচন (তারিখভিত্তিক, সবার জন্য একই)
+   ========================================================= */
+function getTodayVerse(){
+  const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(),0,0)) / 86400000);
+  const idx = dayOfYear % GITA_DATA.verses.length;
+  return GITA_DATA.verses[idx];
+}
+
+/* =========================================================
+   ৬) RENDER ফাংশনসমূহ
+   ========================================================= */
+function renderAll(){
+  renderTodayVerse();
+  renderChaptersList();
+  renderFavorites();
+  renderProgress();
+  renderCalendar();
+}
+
+function renderTodayVerse(){
+  const tv = getTodayVerse();
+  document.getElementById('todayVerseSanskrit').textContent = tv.sa;
+  document.getElementById('todayVerseRef').textContent = `- শ্রীমদ্ভগবদ্গীতা ${tv.ch}.${tv.v}`;
+  document.getElementById('specialMeta').textContent = `অধ্যায় ${tv.ch}, শ্লোক ${tv.v}`;
+  document.getElementById('specialQuote').textContent = tv.sa.length>60 ? tv.sa.slice(0,58)+"..." : tv.sa;
+  document.getElementById('specialReadBtn').onclick = ()=>openVerseModal(tv);
+  document.getElementById('specialCard').onclick = ()=>openVerseModal(tv);
+}
+
+function renderChaptersList(){
+  const wrap = document.getElementById('chaptersList');
+  wrap.innerHTML = '';
+  GITA_DATA.chapters.forEach(ch=>{
+    const div = document.createElement('div');
+    div.className = 'list-card';
+    const readCount = GITA_DATA.verses.filter(v=>v.ch===ch.id && state.read[verseKey(v.ch,v.v)]).length;
+    div.innerHTML = `
+      <div class="row">
+        <div>
+          <h5>অধ্যায় ${ch.id}: ${ch.name}</h5>
+        </div>
+      </div>`;
+    div.onclick = ()=>openChapter(ch.id);
+    wrap.appendChild(div);
+  });
+}
+
+/* =========================================================
+   নোটিফিকেশন — এডমিন Firestore-এর "notifications" কালেকশনে
+   ডকুমেন্ট যোগ করলেই সব ইউজারের বেল আইকনে দেখা যাবে।
+   প্রতিটি ডকুমেন্টে থাকবে: title, message, type (balance/update/general), date
+   ========================================================= */
+let cachedNotifications = [];
+const NOTIF_SEEN_KEY = 'gitaJyotiNotifLastSeen';
+
+function notifTypeMeta(type){
+  switch(type){
+    case 'balance': return { icon:'💰', label:'এডমিন ব্যালেন্স আপডেট' };
+    case 'update':  return { icon:'🛠️', label:'অ্যাপ আপডেট' };
+    case 'reward':  return { icon:'🎁', label:'পুরস্কার / অফার' };
+    default:        return { icon:'🔔', label:'সাধারণ নোটিফিকেশন' };
+  }
+}
+
+function getNotifLastSeen(){
+  try{ return localStorage.getItem(NOTIF_SEEN_KEY) || ''; }catch(e){ return ''; }
+}
+function setNotifLastSeen(iso){
+  try{ localStorage.setItem(NOTIF_SEEN_KEY, iso); }catch(e){}
+}
+
+async function fetchNotifications(){
+  if(!db) return cachedNotifications;
+  try{
+    const snap = await db.collection('notifications').orderBy('date','desc').limit(50).get();
+    cachedNotifications = snap.docs.map(d=>({ id: d.id, ...d.data() }));
+  }catch(e){
+    console.error('নোটিফিকেশন লোড করতে সমস্যা:', e);
+  }
+  return cachedNotifications;
+}
+
+function timeAgoBn(iso){
+  if(!iso) return '';
+  const diffMs = Date.now() - new Date(iso).getTime();
+  const min = Math.floor(diffMs/60000);
+  if(min < 1) return 'এইমাত্র';
+  if(min < 60) return `${min} মিনিট আগে`;
+  const hr = Math.floor(min/60);
+  if(hr < 24) return `${hr} ঘণ্টা আগে`;
+  const day = Math.floor(hr/24);
+  if(day < 30) return `${day} দিন আগে`;
+  return new Date(iso).toLocaleDateString('bn-BD');
+}
+
+async function checkUnreadNotifications(){
+  const list = await fetchNotifications();
+  const lastSeen = getNotifLastSeen();
+  const hasUnread = list.some(n => !lastSeen || new Date(n.date) > new Date(lastSeen));
+  const dot = document.getElementById('bellBtn');
+  if(dot) dot.classList.toggle('has-unread', hasUnread);
+}
+
+async function renderNotifications(){
+  const wrap = document.getElementById('notifList');
+  if(!wrap) return;
+  wrap.innerHTML = '<div class="empty-state">লোড হচ্ছে...</div>';
+  const list = await fetchNotifications();
+  const lastSeen = getNotifLastSeen();
+  wrap.innerHTML = '';
+  if(list.length===0){
+    wrap.innerHTML = '<div class="empty-state">এখনো কোনো নোটিফিকেশন আসেনি।</div>';
+  } else {
+    list.forEach(n=>{
+      const meta = notifTypeMeta(n.type);
+      const isUnread = !lastSeen || new Date(n.date) > new Date(lastSeen);
+      const card = document.createElement('div');
+      card.className = 'notif-card' + (isUnread ? ' unread' : '');
+      card.innerHTML = `
+        <div class="notif-icon">${meta.icon}</div>
+        <div class="notif-body">
+          <h5>${n.title || meta.label}</h5>
+          <p>${n.message || ''}</p>
+          <span class="notif-time">${meta.label} • ${timeAgoBn(n.date)}</span>
+        </div>`;
+      wrap.appendChild(card);
+    });
+  }
+  // পেজটি খোলার সাথে সাথে সব নোটিফিকেশন "পড়া হয়েছে" হিসেবে চিহ্নিত হয়ে যায়
+  setNotifLastSeen(new Date().toISOString());
+  const bell = document.getElementById('bellBtn');
+  if(bell) bell.classList.remove('has-unread');
+}
+
+
+
+async function fetchUserMantras(){
+  if(!db) return cachedMantras;
+  try{
+    const snap = await db.collection('mantras').orderBy('date','desc').limit(200).get();
+    cachedMantras = snap.docs.map(d=>({ id: d.id, ...d.data() }));
+  }catch(e){
+    console.error('মন্ত্র লোড করতে সমস্যা:', e);
+  }
+  return cachedMantras;
+}
+function getUserMantras(){
+  // সিঙ্ক্রোনাস ব্যবহারের জন্য সর্বশেষ ক্যাশড তালিকা ফেরত দেয়
+  return cachedMantras;
+}
+
+/* মন্ত্রের লেখা স্বাভাবিকীকরণ (normalize) — টাইটেল/নাম নয়, আসল মন্ত্রের বাক্য তুলনা করার জন্য।
+   স্পেস, যতিচিহ্ন, দাঁড়ি, লাইনব্রেক, ছোট-বড় হাতের পার্থক্য সব বাদ দিয়ে শুধু মূল শব্দগুলো তুলনা করা হয়,
+   যাতে কেউ স্পেস/কমা/দাঁড়ি বদলে একই মন্ত্র আবার আপলোড করতে না পারে। */
+function normalizeMantraText(str){
+  if(!str) return '';
+  return str
+    .toLowerCase()
+    .normalize('NFC')
+    .replace(/[।,.!?;:'"()\[\]{}—\-–_॥]/g, '')   // যতিচিহ্ন বাদ
+    .replace(/\s+/g, ' ')                          // একাধিক স্পেস → একটি স্পেস
+    .trim();
+}
+
+function isDuplicateMantra(text, excludeId){
+  const norm = normalizeMantraText(text);
+  if(!norm) return false;
+  const list = getUserMantras();
+  return list.some(m => m.id!==excludeId && normalizeMantraText(m.text) === norm);
+}
+
+let selectedMantraImg = null;
+let selectedMantraImgFile = null;
+let editingMantraId = null;
+
+const CLOUDINARY_CLOUD_NAME = 'dxlfms5qd';
+const CLOUDINARY_UPLOAD_PRESET = 'ml_default';
+
+async function uploadToCloudinary(file){
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+  const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
+    method: 'POST',
+    body: formData
+  });
+  if(!res.ok) throw new Error('Cloudinary আপলোড ব্যর্থ হয়েছে');
+  const data = await res.json();
+  return data.secure_url;
+}
+
+(function setupMantraUploadForm(){
+  const imgBtn = document.getElementById('mantraImgBtn');
+  const imgInput = document.getElementById('mantraImgInput');
+  const imgPreview = document.getElementById('mantraImgPreview');
+  const imgPlaceholder = document.getElementById('mantraImgPlaceholder');
+  const uploadBtn = document.getElementById('mantraUploadBtn');
+  if(!imgBtn || !uploadBtn) return;
+
+  imgBtn.addEventListener('click', ()=> imgInput.click());
+
+  imgInput.addEventListener('change', (e)=>{
+    const file = e.target.files[0];
+    if(!file) return;
+    selectedMantraImgFile = file;
+    const reader = new FileReader();
+    reader.onload = (ev)=>{
+      imgPreview.src = ev.target.result;
+      imgPreview.style.display = 'block';
+      imgPlaceholder.style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+  });
+
+  uploadBtn.addEventListener('click', ()=>{
+    const text = document.getElementById('mantraTextInput').value.trim();
+    const author = document.getElementById('mantraAuthorInput').value.trim();
+    if(!author){
+      showToast('দেবতার নাম বা মন্ত্রের নাম দিন');
+      return;
+    }
+    if(!text){
+      showToast('মন্ত্র বা শ্লোকের লেখা দিন');
+      return;
+    }
+
+    /* শক্তিশালী ডুপ্লিকেট-চেক — টাইটেল/নাম নয়, পুরো মন্ত্রের লেখা যাচাই করা হয় (এডিট করা পোস্ট নিজেকে বাদ দিয়ে) */
+    if(isDuplicateMantra(text, editingMantraId)){
+      showToast('⚠️ এই মন্ত্রটি ইতিমধ্যে আপলোড করা হয়েছে। একই মন্ত্র দুইবার আপলোড করা যাবে না।');
+      return;
+    }
+
+    const doActualUpload = async ()=>{
+      // আপলোডের ঠিক আগে আবার একবার চেক — একসাথে দ্রুত একাধিকবার বাটনে চাপ দিলেও যেন ডুপ্লিকেট না হয়
+      if(isDuplicateMantra(text, editingMantraId)){
+        showToast('⚠️ এই মন্ত্রটি ইতিমধ্যে আপলোড করা হয়েছে।');
+        return;
+      }
+      if(!db){
+        showToast('ইন্টারনেট সংযোগ পরীক্ষা করুন, আপলোড ব্যর্থ হয়েছে।');
+        return;
+      }
+      const isEditing = !!editingMantraId;
+      uploadBtn.disabled = true;
+      uploadBtn.textContent = isEditing ? 'আপডেট হচ্ছে...' : 'আপলোড হচ্ছে...';
+      try{
+        if(selectedMantraImgFile){
+          uploadBtn.textContent = 'ছবি আপলোড হচ্ছে...';
+          selectedMantraImg = await uploadToCloudinary(selectedMantraImgFile);
+          selectedMantraImgFile = null;
+          uploadBtn.textContent = isEditing ? 'আপডেট হচ্ছে...' : 'আপলোড হচ্ছে...';
+        }
+        if(isEditing){
+          await db.collection('mantras').doc(editingMantraId).update({
+            text, author,
+            img: selectedMantraImg || null
+          });
+        } else {
+          await db.collection('mantras').add({
+            text, author,
+            img: selectedMantraImg || null,
+            date: new Date().toISOString(),
+            postedBy: currentUser ? (currentUser.displayName || currentUser.email || 'ব্যবহারকারী') : 'ব্যবহারকারী',
+            uid: currentUser ? currentUser.uid : null,
+            likes: 0
+          });
+        }
+
+        // ফর্ম রিসেট
+        document.getElementById('mantraTextInput').value = '';
+        document.getElementById('mantraAuthorInput').value = '';
+        selectedMantraImg = null;
+        selectedMantraImgFile = null;
+        imgPreview.src = '';
+        imgPreview.style.display = 'none';
+        imgPlaceholder.style.display = 'flex';
+        imgInput.value = '';
+        editingMantraId = null;
+        uploadBtn.textContent = 'আপলোড করুন';
+        document.querySelector('#page-mantra-upload h4').textContent = '🪔 দেবতা/মন্ত্র আপলোড করুন';
+
+        showToast(isEditing ? 'আপনার পোস্ট আপডেট হয়েছে ✓' : 'আপনার মন্ত্র আপলোড হয়েছে, সবাই এখন দেখতে পাবে ✓');
+        await renderUserMantras();
+        renderProfileSocialStats();
+        goPage(isEditing ? 'profile' : 'chapters');
+      }catch(e){
+        console.error(e);
+        showToast(isEditing ? 'আপডেট ব্যর্থ হয়েছে, আবার চেষ্টা করুন।' : 'আপলোড ব্যর্থ হয়েছে, আবার চেষ্টা করুন।');
+      }finally{
+        uploadBtn.disabled = false;
+        if(uploadBtn.textContent.includes('হচ্ছে')) uploadBtn.textContent = editingMantraId ? 'আপডেট করুন' : 'আপলোড করুন';
+      }
+    };
+
+    /* লগইন/অ্যাকাউন্ট ছাড়া পোস্ট করা যাবে না — লগইন মডাল দেখানো হবে */
+    if(!isRealUser()){
+      pendingPostAction = doActualUpload;
+      setAuthMode('signup');
+      document.getElementById('authModalTitle').textContent = '🪔 ধর্মীয় লেখা পোস্ট করতে লগইন করুন';
+      openAuthModal();
+      return;
+    }
+
+    doActualUpload();
+  });
+})();
+
+/* =========================================================
+   ধর্মীয় লেখা পোস্ট করতে লগইন/সাইনআপ বাধ্যতামূলক
+   (নাম, জিমেইল আইডি, পাসওয়ার্ড, কনফার্ম পাসওয়ার্ড)
+   ========================================================= */
+let pendingPostAction = null;
+let authMode = 'signup';
+
+function isRealUser(){
+  return !!(currentUser && !currentUser.isAnonymous);
+}
+
+function openAuthModal(){
+  document.getElementById('authErrorMsg').textContent = '';
+  document.getElementById('authModal').classList.add('show');
+}
+function closeAuthModal(){
+  document.getElementById('authModal').classList.remove('show');
+  document.getElementById('authForm').reset();
+}
+
+function setAuthMode(mode){
+  authMode = mode;
+  const nameField = document.getElementById('authNameField');
+  const confirmField = document.getElementById('authConfirmField');
+  const submitBtn = document.getElementById('authSubmitBtn');
+  const tabSignup = document.getElementById('authTabSignup');
+  const tabLogin = document.getElementById('authTabLogin');
+  const switchText = document.getElementById('authSwitchText');
+  document.getElementById('authErrorMsg').textContent = '';
+
+  if(mode === 'signup'){
+    nameField.style.display = 'block';
+    confirmField.style.display = 'block';
+    submitBtn.textContent = 'অ্যাকাউন্ট তৈরি করুন ও পোস্ট করুন';
+    tabSignup.classList.add('active');
+    tabLogin.classList.remove('active');
+    switchText.innerHTML = 'ইতিমধ্যে অ্যাকাউন্ট আছে? <span id="authSwitchLink">লগইন করুন</span>';
+  } else {
+    nameField.style.display = 'none';
+    confirmField.style.display = 'none';
+    submitBtn.textContent = 'লগইন করুন ও পোস্ট করুন';
+    tabLogin.classList.add('active');
+    tabSignup.classList.remove('active');
+    switchText.innerHTML = 'নতুন ব্যবহারকারী? <span id="authSwitchLink">অ্যাকাউন্ট খুলুন</span>';
+  }
+  document.getElementById('authSwitchLink').onclick = ()=>
+    setAuthMode(authMode === 'signup' ? 'login' : 'signup');
+}
+
+function authErrorMessage(err){
+  switch(err && err.code){
+    case 'auth/email-already-in-use': return 'এই জিমেইল দিয়ে আগে থেকেই অ্যাকাউন্ট আছে, লগইন করুন';
+    case 'auth/invalid-email': return 'সঠিক জিমেইল আইডি দিন';
+    case 'auth/weak-password': return 'পাসওয়ার্ড আরও শক্তিশালী করুন (কমপক্ষে ৬ অক্ষর)';
+    case 'auth/user-not-found': return 'এই জিমেইল দিয়ে কোনো অ্যাকাউন্ট পাওয়া যায়নি';
+    case 'auth/wrong-password': return 'পাসওয়ার্ড সঠিক নয়';
+    case 'auth/invalid-credential': return 'জিমেইল অথবা পাসওয়ার্ড সঠিক নয়';
+    case 'auth/popup-blocked': return 'ব্রাউজার পপ-আপ ব্লক করেছে, পপ-আপ অনুমতি দিয়ে আবার চেষ্টা করুন';
+    case 'auth/unauthorized-domain': return 'এই ডোমেইন থেকে গুগল লগইন অনুমোদিত নয়, Firebase কনসোল চেক করুন';
+    default: return 'কিছু একটা সমস্যা হয়েছে, আবার চেষ্টা করুন';
+  }
+}
+
+function runPendingPostAction(){
+  if(typeof pendingPostAction === 'function'){
+    const fn = pendingPostAction;
+    pendingPostAction = null;
+    fn();
+  }
+}
+
+(function setupAuthModal(){
+  const authTabSignup = document.getElementById('authTabSignup');
+  const authTabLogin = document.getElementById('authTabLogin');
+  const authCloseBtn = document.getElementById('authCloseBtn');
+  const authForm = document.getElementById('authForm');
+  const googleSignInBtn = document.getElementById('googleSignInBtn');
+  if(!authForm) return;
+
+  authTabSignup.onclick = ()=> setAuthMode('signup');
+  authTabLogin.onclick = ()=> setAuthMode('login');
+  authCloseBtn.onclick = ()=>{ pendingPostAction = null; closeAuthModal(); };
+  setAuthMode('signup');
+
+  googleSignInBtn.onclick = function(){
+    const errBox = document.getElementById('authErrorMsg');
+    errBox.textContent = '';
+    if(!firebaseReady){ errBox.textContent = 'এই মুহূর্তে অফলাইন মোড — লগইন সম্ভব নয়'; return; }
+
+    /* যতগুলো জিমেইল অ্যাকাউন্ট ব্রাউজারে লগইন করা আছে, সবগুলো অ্যাকাউন্ট-চুজার পপ-আপে দেখাবে */
+    const googleProvider = new firebase.auth.GoogleAuthProvider();
+    googleProvider.setCustomParameters({ prompt: 'select_account' });
+
+    const finishGoogle = (user)=>{
+      currentUser = user;
+      renderProfileIdentity();
+      document.getElementById('profileUid').textContent = user.uid;
+      closeAuthModal();
+      showToast('গুগল দিয়ে লগইন সফল হয়েছে ✓');
+      loadUserData();
+      runPendingPostAction();
+    };
+
+    if(currentUser && currentUser.isAnonymous){
+      /* অতিথি অ্যাকাউন্টকে গুগল অ্যাকাউন্টে রূপান্তর — আগের ডেটা থেকে যাবে */
+      currentUser.linkWithPopup(googleProvider).then(result=> finishGoogle(result.user))
+        .catch(err=>{
+          if(err.code === 'auth/credential-already-in-use' || err.code === 'auth/email-already-in-use'){
+            auth.signInWithPopup(googleProvider).then(result=> finishGoogle(result.user))
+              .catch(err2=>{ if(err2.code !== 'auth/popup-closed-by-user') errBox.textContent = authErrorMessage(err2); });
+          } else if(err.code !== 'auth/popup-closed-by-user'){
+            errBox.textContent = authErrorMessage(err);
+          }
+        });
+    } else {
+      auth.signInWithPopup(googleProvider).then(result=> finishGoogle(result.user))
+        .catch(err=>{ if(err.code !== 'auth/popup-closed-by-user') errBox.textContent = authErrorMessage(err); });
+    }
+  };
+
+  authForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    const errBox = document.getElementById('authErrorMsg');
+    errBox.textContent = '';
+
+    const email = document.getElementById('authEmailInput').value.trim();
+    const password = document.getElementById('authPasswordInput').value;
+
+    if(!email){ errBox.textContent = 'জিমেইল আইডি দিন'; return; }
+    if(password.length < 6){ errBox.textContent = 'পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে'; return; }
+    if(!firebaseReady){ errBox.textContent = 'এই মুহূর্তে অফলাইন মোড — লগইন সম্ভব নয়'; return; }
+
+    if(authMode === 'signup'){
+      const name = document.getElementById('authNameInput').value.trim();
+      const confirmPassword = document.getElementById('authConfirmPasswordInput').value;
+      if(!name){ errBox.textContent = 'আপনার নাম দিন'; return; }
+      if(password !== confirmPassword){ errBox.textContent = 'পাসওয়ার্ড ও কনফার্ম পাসওয়ার্ড মিলছে না'; return; }
+
+      const finishSignup = (user)=>{
+        user.updateProfile({ displayName: name }).catch(()=>{});
+        currentUser = user;
+        renderProfileIdentity();
+        document.getElementById('profileUid').textContent = user.uid;
+        closeAuthModal();
+        showToast('অ্যাকাউন্ট তৈরি হয়েছে, স্বাগতম ' + name + ' ✓');
+        runPendingPostAction();
+      };
+
+      const credential = firebase.auth.EmailAuthProvider.credential(email, password);
+
+      if(currentUser && currentUser.isAnonymous){
+        /* অতিথি অ্যাকাউন্টকে স্থায়ী অ্যাকাউন্টে রূপান্তর — আগের ডেটা থেকে যাবে */
+        currentUser.linkWithCredential(credential).then(result=>{
+          finishSignup(result.user);
+        }).catch(err=>{
+          if(err.code === 'auth/email-already-in-use' || err.code === 'auth/credential-already-in-use'){
+            auth.signInWithEmailAndPassword(email, password).then(result=>{
+              finishSignup(result.user);
+            }).catch(err2=> errBox.textContent = authErrorMessage(err2));
+          } else {
+            errBox.textContent = authErrorMessage(err);
+          }
+        });
+      } else {
+        auth.createUserWithEmailAndPassword(email, password).then(result=>{
+          finishSignup(result.user);
+        }).catch(err=> errBox.textContent = authErrorMessage(err));
+      }
+    } else {
+      auth.signInWithEmailAndPassword(email, password).then(result=>{
+        currentUser = result.user;
+        renderProfileIdentity();
+        document.getElementById('profileUid').textContent = result.user.uid;
+        closeAuthModal();
+        showToast('লগইন সফল হয়েছে ✓');
+        loadUserData();
+        runPendingPostAction();
+      }).catch(err=> errBox.textContent = authErrorMessage(err));
+    }
+  });
+})();
+
+async function deleteUserMantra(id){
+  if(!db) return;
+  try{
+    await db.collection('mantras').doc(id).delete();
+    await renderUserMantras();
+    renderProfileSocialStats();
+    showToast('মন্ত্রটি মুছে ফেলা হয়েছে');
+  }catch(e){
+    console.error(e);
+    showToast('মুছতে সমস্যা হয়েছে, আবার চেষ্টা করুন।');
+  }
+}
+
+async function renderUserMantras(){
+  const wrap = document.getElementById('userMantrasList');
+  if(!wrap) return;
+  wrap.innerHTML = '<div class="empty-state">লোড হচ্ছে...</div>';
+  const list = await fetchUserMantras();
+  wrap.innerHTML = '';
+  if(list.length===0){
+    wrap.innerHTML = '<div class="empty-state">এখনও কোনো মন্ত্র আপলোড করা হয়নি। প্রোফাইল থেকে আপনার প্রথম মন্ত্র আপলোড করুন।</div>';
+  } else {
+    list.forEach(m=>{
+      const card = document.createElement('div');
+      card.className = 'user-mantra-card';
+      const imgHtml = m.img
+        ? `<img src="${m.img}" alt="${m.author}">`
+        : `<div class="no-img">👤</div>`;
+      const isOwner = currentUser && m.uid && currentUser.uid === m.uid;
+      card.innerHTML = `
+        ${imgHtml}
+        <div style="flex:1;">
+          <p class="umc-text">${m.text}</p>
+          <span class="umc-author">— ${m.author}</span>
+        </div>
+        ${isOwner ? `<button class="umc-del" title="মুছে ফেলুন">✕</button>` : ''}`;
+      card.addEventListener('click', (e)=>{
+        if(e.target.closest('.umc-del')) return;
+        openMantraDetail(m);
+      });
+      const delBtn = card.querySelector('.umc-del');
+      if(delBtn) delBtn.onclick = (e)=>{ e.stopPropagation(); deleteUserMantra(m.id); };
+      wrap.appendChild(card);
+    });
+  }
+  renderMyPosts();
+}
+
+/* =========================================================
+   প্রোফাইলের নিচে — শুধু নিজের পোস্ট, সিরিয়াল নম্বর সহ
+   ট্যাপ করে ধরলে (long-press) এডিট/ডিলিট অপশন আসবে
+   ========================================================= */
+let pressTimer = null;
+let activePressMantra = null;
+
+function getMyMantras(){
+  if(!currentUser) return [];
+  return getUserMantras()
+    .filter(m => m.uid && m.uid === currentUser.uid)
+    .slice()
+    .sort((a,b)=> new Date(a.date||0) - new Date(b.date||0)); // পুরোনো → নতুন, সিরিয়াল অনুযায়ী
+}
+
+function renderMyPosts(){
+  const wrap = document.getElementById('myPostsList');
+  const countEl = document.getElementById('myPostsCount');
+  if(!wrap) return;
+  const mine = getMyMantras();
+  if(countEl) countEl.textContent = mine.length;
+  wrap.innerHTML = '';
+  if(mine.length===0){
+    wrap.innerHTML = '<div class="empty-state">আপনি এখনও কোনো পোস্ট করেননি।</div>';
+    return;
+  }
+  mine.forEach((m, idx)=>{
+    const card = document.createElement('div');
+    card.className = 'user-mantra-card';
+    const imgHtml = m.img
+      ? `<img src="${m.img}" alt="${m.author}">`
+      : `<div class="no-img">👤</div>`;
+    card.innerHTML = `
+      <div class="umc-serial">${idx+1}</div>
+      ${imgHtml}
+      <div style="flex:1;">
+        <p class="umc-text">${m.text}</p>
+        <span class="umc-author">— ${m.author}</span>
+        <div class="umc-edit-hint">এডিট/ডিলিট করতে ট্যাপ করে কিছুক্ষণ চেপে ধরুন</div>
+      </div>`;
+    attachLongPress(card, m);
+    card.addEventListener('click', ()=> openMantraDetail(m));
+    wrap.appendChild(card);
+  });
+}
+
+function attachLongPress(el, mantra){
+  const start = (e)=>{
+    activePressMantra = mantra;
+    pressTimer = setTimeout(()=>{
+      pressTimer = null;
+      openPostActionModal(mantra);
+    }, 550);
+  };
+  const cancel = ()=>{
+    if(pressTimer){ clearTimeout(pressTimer); pressTimer = null; }
+  };
+  el.addEventListener('touchstart', start, {passive:true});
+  el.addEventListener('touchend', cancel);
+  el.addEventListener('touchmove', cancel);
+  el.addEventListener('touchcancel', cancel);
+  el.addEventListener('mousedown', start);
+  el.addEventListener('mouseup', cancel);
+  el.addEventListener('mouseleave', cancel);
+  el.addEventListener('contextmenu', (e)=>{ e.preventDefault(); openPostActionModal(mantra); });
+}
+
+function openPostActionModal(mantra){
+  activePressMantra = mantra;
+  document.getElementById('postActionModal').classList.add('show');
+}
+function closePostActionModal(){
+  document.getElementById('postActionModal').classList.remove('show');
+}
+document.getElementById('postActionModal').addEventListener('click', e=>{
+  if(e.target.id==='postActionModal') closePostActionModal();
+});
+document.getElementById('postActionCancelBtn').addEventListener('click', closePostActionModal);
+document.getElementById('postActionEditBtn').addEventListener('click', ()=>{
+  if(!activePressMantra) return;
+  const m = activePressMantra;
+  closePostActionModal();
+  openMantraEditForm(m);
+});
+document.getElementById('postActionDeleteBtn').addEventListener('click', ()=>{
+  if(!activePressMantra) return;
+  const id = activePressMantra.id;
+  closePostActionModal();
+  deleteUserMantra(id);
+});
+
+/* =========================================================
+   মন্ত্র বিস্তারিত পেজ — ছবি, নাম, মন্ত্র, লাইক ও ফলো
+   ========================================================= */
+let activeMantraDetail = null;
+
+function getLikedMantras(){
+  try{ return JSON.parse(localStorage.getItem('gitaJyotiLikedMantras')||'{}'); }catch(e){ return {}; }
+}
+function saveLikedMantras(obj){
+  try{ localStorage.setItem('gitaJyotiLikedMantras', JSON.stringify(obj)); }catch(e){}
+}
+function getFollowedAuthors(){
+  try{ return JSON.parse(localStorage.getItem('gitaJyotiFollowedAuthors')||'{}'); }catch(e){ return {}; }
+}
+function saveFollowedAuthors(obj){
+  try{ localStorage.setItem('gitaJyotiFollowedAuthors', JSON.stringify(obj)); }catch(e){}
+}
+
+function openMantraDetail(m){
+  activeMantraDetail = m;
+  const img = document.getElementById('mdImg');
+  const placeholder = document.getElementById('mdImgPlaceholder');
+  if(m.img){
+    img.src = m.img;
+    img.style.display = 'block';
+    placeholder.style.display = 'none';
+  } else {
+    img.style.display = 'none';
+    placeholder.style.display = 'flex';
+  }
+  document.getElementById('mdName').textContent = m.author;
+  document.getElementById('mdBy').textContent = `আপলোড করেছেন: ${m.postedBy || 'ব্যবহারকারী'}`;
+  document.getElementById('mdText').textContent = m.text;
+
+  renderMantraDetailButtons();
+  goPage('mantra-detail');
+}
+
+function renderMantraDetailButtons(){
+  if(!activeMantraDetail) return;
+  const m = activeMantraDetail;
+  const liked = getLikedMantras();
+  const followed = getFollowedAuthors();
+  const isLiked = !!liked[m.id];
+  const isFollowed = !!followed[m.author];
+
+  const likeBtn = document.getElementById('mdLikeBtn');
+  const followBtn = document.getElementById('mdFollowBtn');
+  likeBtn.textContent = isLiked ? '♥ লাইক করা হয়েছে' : '♡ লাইক';
+  likeBtn.classList.toggle('liked', isLiked);
+  followBtn.textContent = isFollowed ? '✓ ফলো করা হচ্ছে' : '+ ফলো';
+  followBtn.classList.toggle('followed', isFollowed);
+
+  const likeCount = (m.likes||0) + (isLiked?1:0);
+  document.getElementById('mdStats').textContent = `${likeCount} লাইক`;
+}
+
+function doToggleLike(){
+  const liked = getLikedMantras();
+  const m = activeMantraDetail;
+  liked[m.id] = !liked[m.id];
+  saveLikedMantras(liked);
+  showToast(liked[m.id] ? 'লাইক করা হয়েছে ♥' : 'লাইক সরানো হয়েছে');
+  renderMantraDetailButtons();
+  renderProfileSocialStats();
+}
+
+function doToggleFollow(){
+  const followed = getFollowedAuthors();
+  const m = activeMantraDetail;
+  followed[m.author] = !followed[m.author];
+  saveFollowedAuthors(followed);
+  showToast(followed[m.author] ? `${m.author} কে ফলো করা হয়েছে` : `ফলো বাতিল করা হয়েছে`);
+  renderMantraDetailButtons();
+  renderProfileSocialStats();
+}
+
+document.getElementById('mdLikeBtn').addEventListener('click', ()=>{
+  if(!activeMantraDetail) return;
+  /* লগইন ছাড়া লাইক করা যাবে না */
+  if(!isRealUser()){
+    pendingPostAction = doToggleLike;
+    setAuthMode('signup');
+    document.getElementById('authModalTitle').textContent = '🪔 লাইক দিতে লগইন করুন';
+    openAuthModal();
+    return;
+  }
+  doToggleLike();
+});
+
+document.getElementById('mdFollowBtn').addEventListener('click', ()=>{
+  if(!activeMantraDetail) return;
+  /* লগইন ছাড়া ফলো করা যাবে না */
+  if(!isRealUser()){
+    pendingPostAction = doToggleFollow;
+    setAuthMode('signup');
+    document.getElementById('authModalTitle').textContent = '🪔 ফলো করতে লগইন করুন';
+    openAuthModal();
+    return;
+  }
+  doToggleFollow();
+});
+
+document.getElementById('navPlusBtn').addEventListener('click', ()=>{
+  resetMantraUploadForm();
+  goPage('mantra-upload');
+});
+
+/* ফর্ম রিসেট — নতুন পোস্ট মোডে ফিরিয়ে আনে */
+function resetMantraUploadForm(){
+  editingMantraId = null;
+  document.getElementById('mantraTextInput').value = '';
+  document.getElementById('mantraAuthorInput').value = '';
+  selectedMantraImg = null;
+  selectedMantraImgFile = null;
+  const imgPlaceholder = document.getElementById('mantraImgPlaceholder');
+  if(imgPreview){ imgPreview.src=''; imgPreview.style.display='none'; }
+  if(imgPlaceholder) imgPlaceholder.style.display = 'flex';
+  document.getElementById('mantraImgInput').value = '';
+  document.getElementById('mantraUploadBtn').textContent = 'আপলোড করুন';
+  const heading = document.querySelector('#page-mantra-upload h4');
+  if(heading) heading.textContent = '🪔 দেবতা/মন্ত্র আপলোড করুন';
+}
+
+/* এডিট মোডে ফর্ম পূরণ করে আপলোড পেজে নিয়ে যায় */
+function openMantraEditForm(m){
+  editingMantraId = m.id;
+  document.getElementById('mantraTextInput').value = m.text || '';
+  document.getElementById('mantraAuthorInput').value = m.author || '';
+  selectedMantraImg = m.img || null;
+  const imgPreview = document.getElementById('mantraImgPreview');
+  const imgPlaceholder = document.getElementById('mantraImgPlaceholder');
+  if(m.img){
+    imgPreview.src = m.img;
+    imgPreview.style.display = 'block';
+    imgPlaceholder.style.display = 'none';
+  } else {
+    imgPreview.style.display = 'none';
+    imgPlaceholder.style.display = 'flex';
+  }
+  document.getElementById('mantraUploadBtn').textContent = 'আপডেট করুন';
+  const heading = document.querySelector('#page-mantra-upload h4');
+  if(heading) heading.textContent = '✎ পোস্ট এডিট করুন';
+  goPage('mantra-upload');
+}
+
+function openChapter(chId){
+  const ch = GITA_DATA.chapters.find(c=>c.id===chId);
+  document.getElementById('readingChapterTitle').textContent = `অধ্যায় ${ch.id}: ${ch.name}`;
+  const wrap = document.getElementById('readingList');
+  const verses = GITA_DATA.verses.filter(v=>v.ch===chId);
+  wrap.innerHTML = '';
+  if(verses.length===0){
+    wrap.innerHTML = '<div class="empty-state">এই অধ্যায়ের শ্লোক শীঘ্রই যুক্ত হবে।</div>';
+  } else {
+    verses.forEach(v=>{
+      const div = document.createElement('div');
+      div.className = 'list-card';
+      const isFav = !!state.favorites[verseKey(v.ch,v.v)];
+      const isRead = !!state.read[verseKey(v.ch,v.v)];
+      div.innerHTML = `
+        <div class="row">
+          <div>
+            <h5>শ্লোক ${v.v} ${isRead?'✓':''}</h5>
+            <p>${v.sa.slice(0,50)}...</p>
+          </div>
+          <button class="heart-btn ${isFav?'active':''}">${isFav?'♥':'♡'}</button>
+        </div>`;
+      div.querySelector('.heart-btn').onclick = (e)=>{ e.stopPropagation(); toggleFavorite(v); };
+      div.onclick = ()=>openVerseModal(v);
+      wrap.appendChild(div);
+    });
+  }
+  goPage('reading');
+}
+
+function renderFavorites(){
+  const wrap = document.getElementById('favoritesList');
+  wrap.innerHTML = '';
+  const favKeys = Object.keys(state.favorites).filter(k=>state.favorites[k]);
+  if(favKeys.length===0){
+    wrap.innerHTML = '<div class="empty-state">এখনো কোনো প্রিয় শ্লোক যোগ করা হয়নি।<br>শ্লোক পড়ার সময় ♡ বাটনে চাপুন।</div>';
+  } else {
+    favKeys.forEach(k=>{
+      const [ch,v] = k.split('-').map(Number);
+      const verse = GITA_DATA.verses.find(x=>x.ch===ch && x.v===v);
+      if(!verse) return;
+      const div = document.createElement('div');
+      div.className = 'list-card';
+      div.innerHTML = `
+        <div class="row">
+          <div>
+            <h5>অধ্যায় ${ch}, শ্লোক ${v}</h5>
+            <p>${verse.sa.slice(0,55)}...</p>
+          </div>
+          <button class="heart-btn active">♥</button>
+        </div>`;
+      div.querySelector('.heart-btn').onclick = (e)=>{ e.stopPropagation(); toggleFavorite(verse); };
+      div.onclick = ()=>openVerseModal(verse);
+      wrap.appendChild(div);
+    });
+  }
+  document.getElementById('profileFav').textContent = favKeys.length;
+}
+
+function renderProfileSocialStats(){
+  const postsCount = getMyMantras().length;
+  const likesCount = Object.values(getLikedMantras()).filter(Boolean).length;
+  const followsCount = Object.values(getFollowedAuthors()).filter(Boolean).length;
+  const elPosts = document.getElementById('profilePosts');
+  const elLikes = document.getElementById('profileLikes');
+  const elFollows = document.getElementById('profileFollows');
+  if(elPosts) elPosts.textContent = postsCount;
+  if(elLikes) elLikes.textContent = likesCount;
+  if(elFollows) elFollows.textContent = followsCount;
+}
+
+function renderProgress(){
+  const readCount = Object.values(state.read).filter(Boolean).length;
+  const chCount = Object.values(state.readChapters).filter(Boolean).length;
+  document.getElementById('statVerses').textContent = readCount;
+  document.getElementById('statChapters').textContent = chCount;
+  document.getElementById('statStreak').textContent = state.streak || 0;
+  document.getElementById('profileVerses').textContent = readCount;
+  document.getElementById('profileStreak').textContent = state.streak || 0;
+  const totalVerses = GITA_DATA.verses.length;
+  const pct = totalVerses ? Math.min(100, Math.round((readCount/totalVerses)*100)) : 0;
+  document.getElementById('progressFill').style.width = pct+'%';
+}
+
+const banglaMonths = ["বৈশাখ","জ্যৈষ্ঠ","আষাঢ়","শ্রাবণ","ভাদ্র","আশ্বিন","কার্তিক","অগ্রহায়ণ","পৌষ","মাঘ","ফাল্গুন","চৈত্র"];
+const gregMonthsBn = ["জানুয়ারি","ফেব্রুয়ারি","মার্চ","এপ্রিল","মে","জুন","জুলাই","আগস্ট","সেপ্টেম্বর","অক্টোবর","নভেম্বর","ডিসেম্বর"];
+const gregMonthsEn = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+const banglaDays = ["রবিবার","সোমবার","মঙ্গলবার","বুধবার","বৃহস্পতিবার","শুক্রবার","শনিবার"];
+const banglaDaysShort = ["রবি","সোম","মঙ্গল","বুধ","বৃহঃ","শুক্র","শনি"];
+const banglaDigits = ["০","১","২","৩","৪","৫","৬","৭","৮","৯"];
+
+function toBn(num){
+  return String(num).split('').map(ch => /[0-9]/.test(ch) ? banglaDigits[ch] : ch).join('');
+}
+function isGregLeap(y){ return (y%4===0 && y%100!==0) || y%400===0; }
+
+// মাসের দৈর্ঘ্য — বাংলাদেশের সংশোধিত (২০১৯) বঙ্গাব্দ অনুসারে
+function banglaMonthLengths(falgunGregYear){
+  const isFalgunLeap = isGregLeap(falgunGregYear);
+  return [31,31,31,31,31,30,30,30,30,30, isFalgunLeap?30:29, 30];
+}
+
+// গ্রেগরিয়ান তারিখ -> বাংলা তারিখ {year, month(0-idx), date}
+function gregToBangla(gDate){
+  const gYear = gDate.getFullYear();
+  const newYearThisYear = new Date(gYear,3,14); // ১৪ এপ্রিল = পহেলা বৈশাখ
+  let banglaYear, startDate;
+  if(gDate >= newYearThisYear){
+    banglaYear = gYear - 593;
+    startDate = newYearThisYear;
+  } else {
+    banglaYear = gYear - 594;
+    startDate = new Date(gYear-1,3,14);
+  }
+  const dayDiff = Math.floor((gDate - startDate) / 86400000);
+  const monthLens = banglaMonthLengths(startDate.getFullYear()+1);
+  let month=0, remaining=dayDiff;
+  while(remaining >= monthLens[month] && month < 11){
+    remaining -= monthLens[month];
+    month++;
+  }
+  return {year:banglaYear, month, date:remaining+1, monthLens, startDate};
+}
+
+// বাংলা তারিখ (year, month 0-idx, date 1-idx) -> গ্রেগরিয়ান Date
+function banglaToGreg(banglaYear, month, date){
+  const startDate = new Date(banglaYear+593, 3, 14);
+  const monthLens = banglaMonthLengths(startDate.getFullYear()+1);
+  let offset = 0;
+  for(let i=0;i<month;i++) offset += monthLens[i];
+  offset += (date-1);
+  const g = new Date(startDate.getTime() + offset*86400000);
+  return g;
+}
+
+let calViewYear, calViewMonth; // বর্তমানে প্রদর্শিত বাংলা মাস/বছর
+
+function renderCalendar(){
+  const now = new Date();
+  const todayBn = gregToBangla(now);
+  if(calViewYear === undefined){
+    calViewYear = todayBn.year;
+    calViewMonth = todayBn.month;
+  }
+
+  // আজকের কার্ড
+  document.getElementById('todayBdMain').textContent =
+    `${toBn(todayBn.date)} ${banglaMonths[todayBn.month]}, ${toBn(todayBn.year)} বঙ্গাব্দ`;
+  document.getElementById('todayBdDay').textContent = banglaDays[now.getDay()];
+  document.getElementById('todayGregDate').textContent =
+    `${now.getDate()} ${gregMonthsEn[now.getMonth()]} ${now.getFullYear()}`;
+
+  // নেভিগেশন হেডার
+  document.getElementById('calMonthName').textContent = banglaMonths[calViewMonth];
+  document.getElementById('calYearName').textContent = `${toBn(calViewYear)} বঙ্গাব্দ`;
+
+  // সপ্তাহের বার
+  const wkWrap = document.getElementById('calWeekdays');
+  wkWrap.innerHTML = banglaDaysShort.map(d=>`<span>${d}</span>`).join('');
+
+  // এই বাংলা মাসের প্রথম দিনের গ্রেগরিয়ান সমতুল্য বের করে সপ্তাহের বার (offset) বের করা
+  const monthStartGreg = banglaToGreg(calViewYear, calViewMonth, 1);
+  const startWeekday = monthStartGreg.getDay(); // ০=রবি
+  const startDate = new Date(calViewYear+593, 3, 14);
+  const monthLens = banglaMonthLengths(startDate.getFullYear()+1);
+  const daysInMonth = monthLens[calViewMonth];
+
+  const grid = document.getElementById('calGrid');
+  grid.innerHTML = '';
+  for(let i=0;i<startWeekday;i++){
+    const empty = document.createElement('div');
+    empty.className = 'cal-cell empty';
+    grid.appendChild(empty);
+  }
+  for(let d=1; d<=daysInMonth; d++){
+    const cell = document.createElement('div');
+    const isToday = (todayBn.year===calViewYear && todayBn.month===calViewMonth && todayBn.date===d);
+    cell.className = 'cal-cell' + (isToday ? ' today' : '');
+    cell.innerHTML = toBn(d);
+    grid.appendChild(cell);
+  }
+}
+
+document.getElementById('calPrevMonth').addEventListener('click', ()=>{
+  calViewMonth--; if(calViewMonth<0){calViewMonth=11; calViewYear--;}
+  renderCalendar();
+});
+document.getElementById('calNextMonth').addEventListener('click', ()=>{
+  calViewMonth++; if(calViewMonth>11){calViewMonth=0; calViewYear++;}
+  renderCalendar();
+});
+document.getElementById('calPrevYear').addEventListener('click', ()=>{
+  calViewYear--; renderCalendar();
+});
+document.getElementById('calNextYear').addEventListener('click', ()=>{
+  calViewYear++; renderCalendar();
+});
+document.getElementById('calTodayBtn').addEventListener('click', ()=>{
+  const t = gregToBangla(new Date());
+  calViewYear = t.year; calViewMonth = t.month;
+  renderCalendar();
+});
+
+/* =========================================================
+   ৭) মোডাল / শ্লোক একশন
+   ========================================================= */
+function openVerseModal(verse){
+  activeModalVerse = verse;
+  document.getElementById('modalRef').textContent = `শ্রীমদ্ভগবদ্গীতা — অধ্যায় ${verse.ch}, শ্লোক ${verse.v}`;
+  document.getElementById('modalSanskrit').textContent = verse.sa;
+  document.getElementById('modalBangla').textContent = verse.bn;
+  const isFav = !!state.favorites[verseKey(verse.ch,verse.v)];
+  const favBtn = document.getElementById('modalFavBtn');
+  favBtn.textContent = isFav ? '♥ প্রিয় থেকে সরান' : '♡ প্রিয়তে যোগ করুন';
+  document.getElementById('verseModal').classList.add('show');
+}
+function closeVerseModal(){
+  document.getElementById('verseModal').classList.remove('show');
+  activeModalVerse = null;
+}
+document.getElementById('verseModal').addEventListener('click', e=>{
+  if(e.target.id==='verseModal') closeVerseModal();
+});
+document.getElementById('modalFavBtn').onclick = ()=>{
+  if(activeModalVerse) toggleFavorite(activeModalVerse);
+  openVerseModal(activeModalVerse);
+};
+document.getElementById('modalDoneBtn').onclick = ()=>{
+  if(activeModalVerse) markRead(activeModalVerse);
+  showToast('শ্লোকটি পঠিত হিসেবে চিহ্নিত হয়েছে ✓');
+  closeVerseModal();
+};
+
+function toggleFavorite(verse){
+  const key = verseKey(verse.ch, verse.v);
+  state.favorites[key] = !state.favorites[key];
+  saveUserData();
+  renderFavorites();
+  showToast(state.favorites[key] ? 'প্রিয় তালিকায় যোগ হয়েছে ♥' : 'প্রিয় তালিকা থেকে সরানো হয়েছে');
+}
+
+function markRead(verse){
+  const key = verseKey(verse.ch, verse.v);
+  state.read[key] = true;
+  const chVerses = GITA_DATA.verses.filter(v=>v.ch===verse.ch);
+  const allRead = chVerses.every(v=>state.read[verseKey(v.ch,v.v)]);
+  if(allRead) state.readChapters[verse.ch] = true;
+  checkStreak();
+  saveUserData();
+  renderProgress();
+  if(document.getElementById('page-reading').classList.contains('active')) openChapter(verse.ch);
+}
+
+/* =========================================================
+   ৮) সার্চ
+   ========================================================= */
+function doSearch(query){
+  query = query.trim();
+  const resultsHome = document.getElementById('searchResults');
+  if(!query){
+    resultsHome.innerHTML = '<div class="empty-state">শ্লোক, অধ্যায়ের নাম বা বিষয় লিখে খুঁজুন।</div>';
+    return;
+  }
+  const q = query.toLowerCase();
+  const found = GITA_DATA.verses.filter(v=>
+    v.sa.toLowerCase().includes(q) ||
+    v.bn.toLowerCase().includes(q) ||
+    `${v.ch}.${v.v}`.includes(q) ||
+    String(v.ch)===q
+  );
+  resultsHome.innerHTML = '';
+  if(found.length===0){
+    resultsHome.innerHTML = '<div class="empty-state">কোনো ফলাফল পাওয়া যায়নি।</div>';
+    return;
+  }
+  found.forEach(v=>{
+    const div = document.createElement('div');
+    div.className = 'list-card';
+    div.innerHTML = `<h5>অধ্যায় ${v.ch}, শ্লোক ${v.v}</h5><p>${v.bn.slice(0,90)}...</p>`;
+    div.onclick = ()=>openVerseModal(v);
+    resultsHome.appendChild(div);
+  });
+}
+
+document.getElementById('homeSearchInput').addEventListener('input', e=>{
+  if(e.target.value.trim()){
+    goPage('search');
+    document.getElementById('searchPageInput').value = e.target.value;
+    doSearch(e.target.value);
+  }
+});
+document.getElementById('searchPageInput').addEventListener('input', e=>doSearch(e.target.value));
+document.getElementById('homeSearchInput').addEventListener('focus', ()=>{
+  if(document.getElementById('homeSearchInput').value.trim()) goPage('search');
+});
+
+/* =========================================================
+   ৯) কুইজ
+   ========================================================= */
+function loadQuiz(){
+  const pool = GITA_DATA.verses.slice();
+  const shuffled = pool.sort(()=>Math.random()-0.5).slice(0,5);
+  const wrap = document.getElementById('quizArea');
+  wrap.innerHTML = '';
+  let score = 0;
+  shuffled.forEach((q, i)=>{
+    const wrongOptions = pool.filter(p=>p!==q).sort(()=>Math.random()-0.5).slice(0,2);
+    const options = [q, ...wrongOptions].sort(()=>Math.random()-0.5);
+    const card = document.createElement('div');
+    card.className = 'list-card';
+    card.innerHTML = `<h5>প্রশ্ন ${i+1}: এই বাক্যাংশটি কোন অধ্যায়ের?</h5>
+      <p style="margin-bottom:10px;">"${q.bn.slice(0,70)}..."</p>
+      <div class="quiz-options" data-correct="${q.ch}"></div>`;
+    const optWrap = card.querySelector('.quiz-options');
+    options.forEach(o=>{
+      const btn = document.createElement('button');
+      btn.className = 'btn-mini';
+      btn.style.cssText = 'display:block;width:100%;margin:6px 0;background:#2a1809;color:var(--cream);border:1px solid var(--border);';
+      btn.textContent = `অধ্যায় ${o.ch}`;
+      btn.onclick = ()=>{
+        const correct = o.ch === q.ch;
+        btn.style.background = correct ? '#2d5a2d' : '#5a2d2d';
+        if(correct) showToast('সঠিক উত্তর! ✓'); else showToast('ভুল উত্তর, আবার চেষ্টা করুন।');
+        [...optWrap.children].forEach(b=>b.disabled=true);
+      };
+      optWrap.appendChild(btn);
+    });
+    wrap.appendChild(card);
+  });
+}
+
+/* =========================================================
+   ১০) ন্যাভিগেশন
+   ========================================================= */
+function goPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const target = document.getElementById('page-'+name);
+  if(target) target.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const navMap = {home:'home', chapters:'chapters', reading:'chapters', favorites:'favorites', profile:'profile', search:'home', quiz:'home', calendar:'home', more:'home', today:'home', 'mantra-upload':'chapters', 'mantra-detail':'chapters', notifications:'home'};
+  const navTarget = document.querySelector(`.nav-item[data-go="${navMap[name]||'home'}"]`);
+  if(navTarget) navTarget.classList.add('active');
+
+  if(name==='quiz') loadQuiz();
+  if(name==='chapters') renderUserMantras();
+  if(name==='profile'){ renderProfileSocialStats(); fetchUserMantras().then(renderMyPosts); }
+  if(name==='notifications') renderNotifications();
+  if(name==='search'){ document.getElementById('searchResults').innerHTML=''; }
+  if(name==='today'){
+    openVerseModal(getTodayVerse());
+    goPage('home');
+    return;
+  }
+  window.scrollTo(0,0);
+}
+
+document.querySelectorAll('[data-go]').forEach(el=>{
+  el.addEventListener('click', ()=> goPage(el.getAttribute('data-go')) );
+});
+document.querySelectorAll('[data-back]').forEach(el=>{
+  el.addEventListener('click', ()=> goPage(el.getAttribute('data-back')) );
+});
+
+document.getElementById('bellBtn').addEventListener('click', ()=>{
+  goPage('notifications');
+});
+document.getElementById('menuBtn').addEventListener('click', ()=>{
+  goPage('more');
+});
+
+document.getElementById('shareAppCard').addEventListener('click', async ()=>{
+  const shareData = {
+    title: 'Gita Jyoti — গীতা পাঠ, জীবনের পথপ্রদর্শক',
+    text: 'শ্রীমদ্ভগবদ্গীতা পড়ুন, প্রতিদিনের শ্লোক জানুন — Gita Jyoti অ্যাপে। এখনই দেখুন:',
+    url: window.location.href
+  };
+  if(navigator.share){
+    try{
+      await navigator.share(shareData);
+    }catch(err){
+      if(err.name !== 'AbortError') showToast('শেয়ার করা যায়নি, আবার চেষ্টা করুন।');
+    }
+  } else {
+    try{
+      await navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
+      showToast('লিংক কপি হয়েছে, এখন বন্ধুকে পাঠিয়ে দিন ✓');
+    }catch(err){
+      showToast('লিংক কপি করা যায়নি।');
+    }
+  }
+});
+
+/* =========================================================
+   ১০.৫) হোম ব্যানার স্লাইডার (অ্যাডমিন আপলোড করা ছবি, ৩ সেকেন্ড পরপর পরিবর্তন)
+   ========================================================= */
+let heroSlideTimer = null;
+let heroSlideIndex = 0;
+
+function startHeroSlider(urls){
+  const art = document.querySelector('.hero-art');
+  if(!art) return;
+  if(heroSlideTimer){ clearInterval(heroSlideTimer); heroSlideTimer = null; }
+
+  // আগের স্লাইড/ডট মুছে ফেলা (ornament বাদে)
+  art.querySelectorAll('img.hero-slide, .hero-dots').forEach(el=>el.remove());
+
+  if(!urls || !urls.length) return; // ছবি না থাকলে পুরনো ডিফল্ট ডিজাইন দেখাবে
+
+  urls.forEach((url, i)=>{
+    const img = document.createElement('img');
+    img.className = 'hero-slide' + (i===0 ? ' active' : '');
+    img.src = url;
+    img.alt = 'ব্যানার';
+    art.appendChild(img);
+  });
+
+  if(urls.length > 1){
+    const dots = document.createElement('div');
+    dots.className = 'hero-dots';
+    urls.forEach((_, i)=>{
+      const d = document.createElement('span');
+      if(i===0) d.className = 'active';
+      dots.appendChild(d);
+    });
+    art.appendChild(dots);
+  }
+
+  heroSlideIndex = 0;
+  if(urls.length > 1){
+    heroSlideTimer = setInterval(()=>{
+      const slides = art.querySelectorAll('img.hero-slide');
+      const dotEls = art.querySelectorAll('.hero-dots span');
+      if(!slides.length) return;
+      slides[heroSlideIndex].classList.remove('active');
+      if(dotEls[heroSlideIndex]) dotEls[heroSlideIndex].classList.remove('active');
+      heroSlideIndex = (heroSlideIndex + 1) % slides.length;
+      slides[heroSlideIndex].classList.add('active');
+      if(dotEls[heroSlideIndex]) dotEls[heroSlideIndex].classList.add('active');
+    }, 3000);
+  }
+}
+
+async function loadHeroBanners(){
+  if(!firebaseReady) return;
+  try{
+    const snap = await db.collection('heroBanners').orderBy('order','asc').get();
+    const urls = [];
+    snap.forEach(doc=> urls.push(doc.data().url));
+    startHeroSlider(urls);
+  }catch(err){
+    console.warn('হিরো ব্যানার লোড সমস্যা:', err);
+  }
+}
+
+async function renderHeroBannerAdminList(){
+  const wrap = document.getElementById('heroBannerList');
+  if(!wrap) return;
+  if(!firebaseReady){ wrap.innerHTML = ''; return; }
+  try{
+    const snap = await db.collection('heroBanners').orderBy('order','asc').get();
+    if(snap.empty){
+      wrap.innerHTML = '<div class="empty-state">এখনও কোনো ব্যানার যোগ করা হয়নি।</div>';
+      return;
+    }
+    let html = '';
+    snap.forEach(doc=>{
+      const d = doc.data();
+      html += `<div class="list-card" style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+        <img src="${d.url}" style="width:56px;height:36px;object-fit:cover;border-radius:6px;border:1px solid #4a2c0e;flex-shrink:0;">
+        <span style="flex:1;font-size:11px;color:var(--muted);word-break:break-all;line-height:1.4;">${d.url}</span>
+        <button type="button" class="hb-del-btn" data-id="${doc.id}" style="background:none;border:1px solid #4a2c0e;color:#e8a83c;border-radius:8px;padding:6px 10px;font-size:12px;cursor:pointer;flex-shrink:0;">✕</button>
+      </div>`;
+    });
+    wrap.innerHTML = html;
+    wrap.querySelectorAll('.hb-del-btn').forEach(btn=>{
+      btn.addEventListener('click', async ()=>{
+        try{
+          await db.collection('heroBanners').doc(btn.dataset.id).delete();
+          showToast('ব্যানার মুছে ফেলা হয়েছে ✓');
+          renderHeroBannerAdminList();
+          loadHeroBanners();
+        }catch(err){
+          showToast('মুছতে সমস্যা হয়েছে।');
+        }
+      });
+    });
+  }catch(err){
+    wrap.innerHTML = '<div class="empty-state">লোড করা যায়নি।</div>';
+  }
+}
+
+(function setupHeroBannerAdd(){
+  const btn = document.getElementById('heroBannerAddBtn');
+  const input = document.getElementById('heroBannerUrlInput');
+  if(!btn || !input) return;
+  btn.addEventListener('click', async ()=>{
+    const url = input.value.trim();
+    if(!url){ showToast('ছবির লিংক দিন।'); return; }
+    if(!firebaseReady){ showToast('অফলাইন মোড — সংযোগ নেই।'); return; }
+    btn.disabled = true;
+    btn.textContent = 'যোগ হচ্ছে...';
+    try{
+      const snap = await db.collection('heroBanners').orderBy('order','desc').limit(1).get();
+      let nextOrder = 1;
+      snap.forEach(doc=>{ nextOrder = (doc.data().order || 0) + 1; });
+      await db.collection('heroBanners').add({
+        url, order: nextOrder, createdAt: new Date().toISOString()
+      });
+      input.value = '';
+      showToast('ব্যানার যোগ হয়েছে ✓');
+      renderHeroBannerAdminList();
+      loadHeroBanners();
+    }catch(err){
+      showToast('যোগ করা যায়নি, আবার চেষ্টা করুন।');
+    }finally{
+      btn.disabled = false;
+      btn.textContent = '+ ব্যানার যোগ করুন';
+    }
+  });
+})();
+
+/* =========================================================
+   ১১) ইনিশিয়ালাইজ
+   ========================================================= */
+initAuth();
+renderChaptersList();
+renderUserMantras();
+renderProfileSocialStats();
+renderCalendar();
+doSearch('');
+checkUnreadNotifications();
+loadHeroBanners();
+renderHeroBannerAdminList();
+</script>
+
+</body>
+</html>
